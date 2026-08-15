@@ -1,0 +1,57 @@
+rules_version = '2';
+
+// Data model:
+//   /sets/{setId}                        - {name, order, handCount}         (public read, admin write)
+//   /sets/{setId}/hands/{handIndex}       - {num, sHand, nHand, dealer,
+//                                            thusFar, suggested, notes}     (public read, admin write)
+//   /sessions/{code}                      - {hostName, partnerName, setId,
+//                                            hostUid, partnerUid,
+//                                            handOrder, currentPos,
+//                                            createdAt}
+//   /sessions/{code}/handStates/{pos}     - {handRef, sName, nName, sUid, nUid,
+//                                            liveCalls, turnSeat, over,
+//                                            revealed}
+//
+// The full hand (sHand/nHand) lives in /sets, which is world-readable, so
+// true per-seat secrecy is enforced by the CLIENT only hiding the other
+// hand in the UI, gated on anonymous-auth uid matching the seat assigned
+// in the current handState. This is adequate for a practice tool between
+// two trusted partners (nobody else has the session code), but is not
+// hardened against a technically sophisticated partner reading Firestore
+// directly. See README for how to harden further if that matters to you.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /sets/{setId} {
+      allow read: if true;
+      allow write: if false; // seed via firebase-admin (scripts/seed.mjs) only
+      match /hands/{handIndex} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+
+    match /sessions/{code} {
+      allow read: if true;
+      // anyone can create a session (host flow); only the two participants
+      // (once their uid is recorded) may update it (e.g. advancing hands)
+      allow create: if request.resource.data.hostUid == request.auth.uid;
+      allow update: if request.auth != null &&
+                       (resource.data.hostUid == request.auth.uid ||
+                        resource.data.partnerUid == request.auth.uid ||
+                        // allow the partner's FIRST join, which sets partnerUid
+                        (resource.data.partnerUid == null &&
+                         request.resource.data.partnerUid == request.auth.uid));
+      allow delete: if false;
+
+      match /handStates/{pos} {
+        allow read: if true;
+        allow create, update: if request.auth != null &&
+          (get(/databases/$(database)/documents/sessions/$(code)).data.hostUid == request.auth.uid ||
+           get(/databases/$(database)/documents/sessions/$(code)).data.partnerUid == request.auth.uid);
+        allow delete: if false;
+      }
+    }
+  }
+}

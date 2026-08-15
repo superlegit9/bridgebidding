@@ -1,0 +1,2815 @@
+{
+  "sets": [
+    {
+      "name": "FFB",
+      "hands": [
+        {
+          "num": 1,
+          "sHand": {
+            "S": "973",
+            "H": "AQJ65",
+            "D": "Q",
+            "C": "K532"
+          },
+          "nHand": {
+            "S": "J84",
+            "H": "T7",
+            "D": "AJ9876",
+            "C": "A6"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2H AP",
+          "notes": "Don't bother showing the clubs. 2H is a convenient catchall"
+        },
+        {
+          "num": 2,
+          "sHand": {
+            "S": "72",
+            "H": "AKJ643",
+            "D": "Q5",
+            "C": "K43"
+          },
+          "nHand": {
+            "S": "J83",
+            "H": "T5",
+            "D": "AJ9876",
+            "C": "A5"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3H 4H",
+          "notes": "3H should be invitational and non-forcing. Same if it is a minor"
+        },
+        {
+          "num": 3,
+          "sHand": {
+            "S": "72",
+            "H": "AKQ953",
+            "D": "K2",
+            "C": "QJ5"
+          },
+          "nHand": {
+            "S": "K93",
+            "H": "T6",
+            "D": "QJ6543",
+            "C": "A4"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2S 3D 3H 4H",
+          "notes": "Cuebid when game forcing, generally"
+        },
+        {
+          "num": 4,
+          "sHand": {
+            "S": "7",
+            "H": "AKT643",
+            "D": "J65",
+            "C": "K93"
+          },
+          "nHand": {
+            "S": "AK982",
+            "H": "J5",
+            "D": "T7",
+            "C": "Q875"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3H AP",
+          "notes": "3X rebid NF"
+        },
+        {
+          "num": 5,
+          "sHand": {
+            "S": "Q2",
+            "H": "AKQ953",
+            "D": "62",
+            "C": "QJ5"
+          },
+          "nHand": {
+            "S": "AK987",
+            "H": "J6",
+            "D": "T7",
+            "C": "9876"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D 3H 4H",
+          "notes": "Cuebid when game forcing, generally"
+        },
+        {
+          "num": 6,
+          "sHand": {
+            "S": "92",
+            "H": "AKJ73",
+            "D": "652",
+            "C": "A75"
+          },
+          "nHand": {
+            "S": "AKJ87",
+            "H": "5",
+            "D": "A74",
+            "C": "KJ32"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D 3N",
+          "notes": "Do not lie about the heart length. You had to lie about shape or strength, the latter is usually preferable"
+        },
+        {
+          "num": 7,
+          "sHand": {
+            "S": "Q2",
+            "H": "AKJ73",
+            "D": "652",
+            "C": "Q75"
+          },
+          "nHand": {
+            "S": "AKJ87",
+            "H": "5",
+            "D": "A74",
+            "C": "AJ32"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D 3N/ 3D 3S 4S",
+          "notes": "Do not lie about the heart length"
+        },
+        {
+          "num": 8,
+          "sHand": {
+            "S": "K2",
+            "H": "AK9753",
+            "D": "92",
+            "C": "AJ5"
+          },
+          "nHand": {
+            "S": "AQ9834",
+            "H": "2",
+            "D": "J54",
+            "C": "K73"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D 3S 4S",
+          "notes": "Cuebid when game forcing, generally"
+        },
+        {
+          "num": 9,
+          "sHand": {
+            "S": "9",
+            "H": "Q5",
+            "D": "AQ963",
+            "C": "AJ852"
+          },
+          "nHand": {
+            "S": "AQT63",
+            "H": "J86",
+            "D": "KT2",
+            "C": "73"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2H",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3C 3D AP",
+          "notes": "New suit only F1"
+        },
+        {
+          "num": 10,
+          "sHand": {
+            "S": "K9",
+            "H": "5",
+            "D": "AQ963",
+            "C": "AJ852"
+          },
+          "nHand": {
+            "S": "AQT63",
+            "H": "J87",
+            "D": "KT2",
+            "C": "73"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2H",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3C 3D 3S 4S",
+          "notes": "New suit only F1"
+        },
+        {
+          "num": 11,
+          "sHand": {
+            "S": "73",
+            "H": "AQ873",
+            "D": "9",
+            "C": "AQ954"
+          },
+          "nHand": {
+            "S": "AQT64",
+            "H": "JT",
+            "D": "KT52",
+            "C": "73"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3C 3H AP",
+          "notes": "New suit only F1"
+        },
+        {
+          "num": 12,
+          "sHand": {
+            "S": "K3",
+            "H": "A9873",
+            "D": "97",
+            "C": "AQ95"
+          },
+          "nHand": {
+            "S": "AQT64",
+            "H": "JT",
+            "D": "K2",
+            "C": "K842"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3C 3D 3S 4S",
+          "notes": "New suit only F1"
+        },
+        {
+          "num": 13,
+          "sHand": {
+            "S": "73",
+            "H": "AQ873",
+            "D": "7",
+            "C": "AJ965"
+          },
+          "nHand": {
+            "S": "AQT64",
+            "H": "KT",
+            "D": "982",
+            "C": "KQ4"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3C 3D 4C 4H",
+          "notes": "New suit only F1"
+        },
+        {
+          "num": 14,
+          "sHand": {
+            "S": "7",
+            "H": "AQ873",
+            "D": "76",
+            "C": "AJ965"
+          },
+          "nHand": {
+            "S": "AQJ963",
+            "H": "KT",
+            "D": "92",
+            "C": "K74"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3C 3S 4S",
+          "notes": "3S is game forcing"
+        },
+        {
+          "num": 15,
+          "sHand": {
+            "S": "93",
+            "H": "J82",
+            "D": "K9",
+            "C": "AQJ853"
+          },
+          "nHand": {
+            "S": "T84",
+            "H": "AQ",
+            "D": "AT8754",
+            "C": "62"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1C",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "3C AP",
+          "notes": "Free bid of minor should be NF"
+        },
+        {
+          "num": 16,
+          "sHand": {
+            "S": "A3",
+            "H": "J82",
+            "D": "K9",
+            "C": "AQJ853"
+          },
+          "nHand": {
+            "S": "T84",
+            "H": "AQ",
+            "D": "AT8754",
+            "C": "62"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1C",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "X 3D 3N",
+          "notes": "Free bid of minor should be NF; X if game forcing or cue if necessary"
+        },
+        {
+          "num": 17,
+          "sHand": {
+            "S": "A6",
+            "H": "AKJ932",
+            "D": "Q63",
+            "C": "85"
+          },
+          "nHand": {
+            "S": "K95",
+            "H": "T4",
+            "D": "AT",
+            "C": "AQ6743"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "3C",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3H 4H",
+          "notes": "3M should be 6+"
+        },
+        {
+          "num": 18,
+          "sHand": {
+            "S": "A76",
+            "H": "AQJ85",
+            "D": "JT4",
+            "C": "93"
+          },
+          "nHand": {
+            "S": "K95",
+            "H": "T4",
+            "D": "A86",
+            "C": "AQJ54"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "3C",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D 3N",
+          "notes": "Cue as the catchall in sequences where there is no space for a lower catchall"
+        },
+        {
+          "num": 19,
+          "sHand": {
+            "S": "732",
+            "H": "AKJ43",
+            "D": "J53",
+            "C": "K4"
+          },
+          "nHand": {
+            "S": "T84",
+            "H": "65",
+            "D": "AQ9876",
+            "C": "A5"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D AP",
+          "notes": "Nothing."
+        },
+        {
+          "num": 20,
+          "sHand": {
+            "S": "7",
+            "H": "AKJ43",
+            "D": "J532",
+            "C": "K43"
+          },
+          "nHand": {
+            "S": "A83",
+            "H": "65",
+            "D": "AQ9876",
+            "C": "Q9"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3S 4D 5D",
+          "notes": "Strain is always the first priority. Splinter is a very good tool to get you to the right contract"
+        },
+        {
+          "num": 21,
+          "sHand": {
+            "S": "7",
+            "H": "AKJ43",
+            "D": "Q52",
+            "C": "A432"
+          },
+          "nHand": {
+            "S": "A83",
+            "H": "Q5",
+            "D": "AJ987",
+            "C": "J95"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2S 2N 3D 3S 4D 4S 5C 5D",
+          "notes": "3S to show doubt. You can tolerate playing other strains. Partner should rebid 3N with a balanced hand"
+        },
+        {
+          "num": 22,
+          "sHand": {
+            "S": "K9",
+            "H": "AQ743",
+            "D": "J53",
+            "C": "K43"
+          },
+          "nHand": {
+            "S": "T83",
+            "H": "K5",
+            "D": "AQT876",
+            "C": "A5"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D 3H 3N",
+          "notes": "2D should be denying H support so the delayed 3H should be offering 4H as a place to play. Opener elects to play 3N with the KX spade"
+        },
+        {
+          "num": 23,
+          "sHand": {
+            "S": "K9",
+            "H": "AQ743",
+            "D": "J53",
+            "C": "K43"
+          },
+          "nHand": {
+            "S": "T83",
+            "H": "5",
+            "D": "AQ9876",
+            "C": "A95"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D 3S 3N",
+          "notes": "3S just to ask stop. Note that it doesn\u2019t necessarily deny one. If your tricks are too slow, you might only want to play 3N with two stoppers"
+        },
+        {
+          "num": 24,
+          "sHand": {
+            "S": "K85",
+            "H": "72",
+            "D": "AQ93",
+            "C": "KJ82"
+          },
+          "nHand": {
+            "S": "97",
+            "H": "AQJ963",
+            "D": "K4",
+            "C": "Q97"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "P",
+              "isOpp": true,
+              "implicit": true
+            },
+            {
+              "seat": "S",
+              "call": "2N",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3H 4H",
+          "notes": "If 3H is NF the bidding sequence would become extremely clunky because you would need to bid 3S with game forcing hands. Suggest 3H GF"
+        },
+        {
+          "num": 25,
+          "sHand": {
+            "S": "QJ5",
+            "H": "72",
+            "D": "AQ93",
+            "C": "KJ82"
+          },
+          "nHand": {
+            "S": "97",
+            "H": "AQJ963",
+            "D": "K4",
+            "C": "Q97"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P X 2N 3H 4H",
+          "notes": "3H should be invitational and non-forcing. Same if it is a minor. X for a GF hand"
+        },
+        {
+          "num": 26,
+          "sHand": {
+            "S": "985",
+            "H": "K2",
+            "D": "AQ93",
+            "C": "A872"
+          },
+          "nHand": {
+            "S": "27",
+            "H": "AQJ963",
+            "D": "K4",
+            "C": "T93"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P 3H 4H",
+          "notes": "3H should be invitational and non-forcing. Same if it is a minor"
+        },
+        {
+          "num": 27,
+          "sHand": {
+            "S": "Q85",
+            "H": "T2",
+            "D": "AQ93",
+            "C": "A872"
+          },
+          "nHand": {
+            "S": "97",
+            "H": "AQJ963",
+            "D": "KT4",
+            "C": "T9"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P 3H AP",
+          "notes": "3H should be invitational and non-forcing. Same if it is a minor"
+        },
+        {
+          "num": 28,
+          "sHand": {
+            "S": "KJ82",
+            "H": "72",
+            "D": "AQ93",
+            "C": "QJ5"
+          },
+          "nHand": {
+            "S": "A97",
+            "H": "AQJ963",
+            "D": "K74",
+            "C": "9"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2C",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "3C",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P 3H 4H",
+          "notes": "You can get away with 3H invitational here but not necessarily in analogous bidding sequences"
+        },
+        {
+          "num": 29,
+          "sHand": {
+            "S": "K854",
+            "H": "K2",
+            "D": "T93",
+            "C": "AQ72"
+          },
+          "nHand": {
+            "S": "A97",
+            "H": "AQJ963",
+            "D": "4",
+            "C": "K83"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1C",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "3D",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P 3H 4H",
+          "notes": "Should 3H be only invitational, the bidding sequence would become extremely clunky. Difficult for partner to find a rebid after X. Sometimes you also want to play the 6-1 fit. Suggest 3H to be game forcing when opponents have interfered at the three-level"
+        },
+        {
+          "num": 30,
+          "sHand": {
+            "S": "985",
+            "H": "T82",
+            "D": "AQ93",
+            "C": "AQ7"
+          },
+          "nHand": {
+            "S": "27",
+            "H": "AQJ96",
+            "D": "KT4",
+            "C": "K98"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "3H 4H AP",
+          "notes": "Nothing."
+        },
+        {
+          "num": 31,
+          "sHand": {
+            "S": "98",
+            "H": "T82",
+            "D": "AQ93",
+            "C": "AK73"
+          },
+          "nHand": {
+            "S": "27",
+            "H": "AQJ96",
+            "D": "KT4",
+            "C": "J98"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "4H AP",
+          "notes": "Nothing."
+        },
+        {
+          "num": 32,
+          "sHand": {
+            "S": "985",
+            "H": "T82",
+            "D": "AQ93",
+            "C": "AQ7"
+          },
+          "nHand": {
+            "S": "27",
+            "H": "K96",
+            "D": "KT4",
+            "C": "KJT98"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2C",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "3C AP",
+          "notes": "Nothing."
+        },
+        {
+          "num": 33,
+          "sHand": {
+            "S": "98",
+            "H": "T982",
+            "D": "AKJ3",
+            "C": "AQ7"
+          },
+          "nHand": {
+            "S": "A7",
+            "H": "J75",
+            "D": "QT4",
+            "C": "KJT98"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2C",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "X 2N 3C 3D 3N",
+          "notes": "Have to X because you are game forcing. 3C would be too passive"
+        },
+        {
+          "num": 34,
+          "sHand": {
+            "S": "9",
+            "H": "K75",
+            "D": "Q8",
+            "C": "AKQ9876"
+          },
+          "nHand": {
+            "S": "AT87",
+            "H": "Q6",
+            "D": "AJT64",
+            "C": "32"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1C",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "3S 3N AP",
+          "notes": "The type of hand that is game forcing but inappropriate to double"
+        },
+        {
+          "num": 35,
+          "sHand": {
+            "S": "9",
+            "H": "A5",
+            "D": "Q842",
+            "C": "AKJ987"
+          },
+          "nHand": {
+            "S": "AT8",
+            "H": "J96",
+            "D": "AKT65",
+            "C": "T2"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1C",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "2D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "E",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "4S 4N 5S 5N 7D",
+          "notes": "Splinters are a very helpful bid"
+        }
+      ]
+    },
+    {
+      "name": "Takeout doubles",
+      "hands": [
+        {
+          "num": 1,
+          "sHand": {
+            "S": "K85",
+            "H": "A876",
+            "D": "92",
+            "C": "AJ54"
+          },
+          "nHand": {
+            "S": "2Q93",
+            "H": "KJ52",
+            "D": "763",
+            "C": "92"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2S AP",
+          "notes": "44M always bid the higher one first so you can show the next one later if necessary"
+        },
+        {
+          "num": 2,
+          "sHand": {
+            "S": "K85",
+            "H": "AQ76",
+            "D": "92",
+            "C": "AJ54"
+          },
+          "nHand": {
+            "S": "AQJ93",
+            "H": "KT4",
+            "D": "834",
+            "C": "96"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2D 2H 2S 4S",
+          "notes": "It would be good to differentiate 5+M INV from just a 4M constructive type of hand"
+        },
+        {
+          "num": 3,
+          "sHand": {
+            "S": "K85",
+            "H": "A976",
+            "D": "92",
+            "C": "AJ54"
+          },
+          "nHand": {
+            "S": "AQJ93",
+            "H": "KT4",
+            "D": "834",
+            "C": "96"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2D 2H 2S AP",
+          "notes": "It would be good to differentiate 5+M INV from just a 4M constructive type of hand"
+        },
+        {
+          "num": 4,
+          "sHand": {
+            "S": "K875",
+            "H": "AQ76",
+            "D": "92",
+            "C": "AJ5"
+          },
+          "nHand": {
+            "S": "AJ4932",
+            "H": "8",
+            "D": "534",
+            "C": "864"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3S 4S",
+          "notes": "It would be good to have a bid for such hands. Playing strength but not strong. I like 3M as such a hand"
+        },
+        {
+          "num": 5,
+          "sHand": {
+            "S": "K87",
+            "H": "AQ76",
+            "D": "832",
+            "C": "A95"
+          },
+          "nHand": {
+            "S": "AT4932",
+            "H": "8",
+            "D": "954",
+            "C": "Q64"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3S P",
+          "notes": "It would be good to have a bid for such hands. Playing strength but not strong. I like3M as such a hand"
+        },
+        {
+          "num": 6,
+          "sHand": {
+            "S": "JT54",
+            "H": "K987",
+            "D": "A3",
+            "C": "AJ9"
+          },
+          "nHand": {
+            "S": "KQ963",
+            "H": "2",
+            "D": "94",
+            "C": "KT852"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1D",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "4S AP",
+          "notes": "Just bid the game"
+        },
+        {
+          "num": 7,
+          "sHand": {
+            "S": "7",
+            "H": "AQ93",
+            "D": "832",
+            "C": "AK752"
+          },
+          "nHand": {
+            "S": "JT54",
+            "H": "KJT8",
+            "D": "AQ74",
+            "C": "3"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2S 3H 4H OR 2S 3C 3N 4H",
+          "notes": "2S can be regarded as ASK 4H or any GF hand. Either of these treatments are fine. The former forces the doubler to always show 4H first. The latter gives him a bit more leeway but he needs to be confident enough to correct later on"
+        },
+        {
+          "num": 8,
+          "sHand": {
+            "S": "8",
+            "H": "A943",
+            "D": "Q542",
+            "C": "AK76"
+          },
+          "nHand": {
+            "S": "9643",
+            "H": "KQ85",
+            "D": "AJ3",
+            "C": "98"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3H 4H",
+          "notes": "I\u2019m not comfortable with 3H on four cards either but I\u2019m also not comfortable with 2H on 10HCP either. Somewhat forced to bite the bullet"
+        },
+        {
+          "num": 9,
+          "sHand": {
+            "S": "87",
+            "H": "AJ3",
+            "D": "Q542",
+            "C": "AK76"
+          },
+          "nHand": {
+            "S": "963",
+            "H": "KQ854",
+            "D": "AJ3",
+            "C": "98"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2S 3C 3H 4H",
+          "notes": "I use this to show an invitational 5H hand instead of lumping it with 3H. Do consider"
+        },
+        {
+          "num": 10,
+          "sHand": {
+            "S": "87",
+            "H": "AT3",
+            "D": "KQ42",
+            "C": "AK76"
+          },
+          "nHand": {
+            "S": "963",
+            "H": "KJ854",
+            "D": "A75",
+            "C": "82"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3H 3S 4H AP",
+          "notes": "Obviously, the doubler will pass 2H. 3S just to check strain"
+        },
+        {
+          "num": 11,
+          "sHand": {
+            "S": "87",
+            "H": "AT3",
+            "D": "Q542",
+            "C": "AK76"
+          },
+          "nHand": {
+            "S": "JT5",
+            "H": "96",
+            "D": "AK8763",
+            "C": "42"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D AP",
+          "notes": "Just don\u2019t bid 2D with this it is too strong. I definitely remember such a sequence happening before"
+        },
+        {
+          "num": 12,
+          "sHand": {
+            "S": "K93",
+            "H": "82",
+            "D": "AKJ5",
+            "C": "AK96"
+          },
+          "nHand": {
+            "S": "QJ84",
+            "H": "J934",
+            "D": "876",
+            "C": "54"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1H",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "1S 2H 2S AP",
+          "notes": "What does the cue show? A strong hand that usually does not have support. What is forcing after the cue? I play only a rebid as NF, and everything else as constructive"
+        },
+        {
+          "num": 13,
+          "sHand": {
+            "S": "82",
+            "H": "AJ95",
+            "D": "AK3",
+            "C": "AQ76"
+          },
+          "nHand": {
+            "S": "A76",
+            "H": "24",
+            "D": "QJ75",
+            "C": "JT83"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2D 2S 3C 3S 3N OR 1N 2N 3N",
+          "notes": ""
+        },
+        {
+          "num": 14,
+          "sHand": {
+            "S": "AQ3",
+            "H": "K654",
+            "D": "AJ94",
+            "C": "83"
+          },
+          "nHand": {
+            "S": "KJT6",
+            "H": "A73",
+            "D": "26",
+            "C": "Q952"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1C",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2S AP",
+          "notes": ""
+        },
+        {
+          "num": 15,
+          "sHand": {
+            "S": "AK73",
+            "H": "KQ54",
+            "D": "QJ8",
+            "C": "83"
+          },
+          "nHand": {
+            "S": "JT986",
+            "H": "J7",
+            "D": "K6",
+            "C": "AT54"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1C",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "2S 3S 4S",
+          "notes": ""
+        },
+        {
+          "num": 16,
+          "sHand": {
+            "S": "A876",
+            "H": "3",
+            "D": "KQ94",
+            "C": "A765"
+          },
+          "nHand": {
+            "S": "KJ954",
+            "H": "842",
+            "D": "A2",
+            "C": "J84"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1H",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2H",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "3S 4S",
+          "notes": "2S is not enough when you have 5S and a good hand. Could easily just be 4S and 6-7HCP or 5S 4-5HCP. Would be dangerous for partner to raise under such circumstances because 3S would not be safe"
+        },
+        {
+          "num": 17,
+          "sHand": {
+            "S": "92",
+            "H": "AK83",
+            "D": "643",
+            "C": "AK75"
+          },
+          "nHand": {
+            "S": "853",
+            "H": "QJ927",
+            "D": "AJ9",
+            "C": "64"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "3H 4H",
+          "notes": "Lebensohl should exist here"
+        },
+        {
+          "num": 18,
+          "sHand": {
+            "S": "92",
+            "H": "AQ83",
+            "D": "JT3",
+            "C": "AK75"
+          },
+          "nHand": {
+            "S": "534",
+            "H": "K5",
+            "D": "A7645",
+            "C": "832"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "2N 3C 3D AP",
+          "notes": "Lebensohl should exist here"
+        },
+        {
+          "num": 19,
+          "sHand": {
+            "S": "J6",
+            "H": "AQ74",
+            "D": "965",
+            "C": "AK82"
+          },
+          "nHand": {
+            "S": "Q785",
+            "H": "K2",
+            "D": "AJT83",
+            "C": "64"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1S",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2S",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D AP",
+          "notes": "Though you are extra, game is still very difficult. ~9HCP 5m would bypass lebensohl. EV+ option is to pass"
+        },
+        {
+          "num": 20,
+          "sHand": {
+            "S": "AK84",
+            "H": "76",
+            "D": "KQ9",
+            "C": "AJ85"
+          },
+          "nHand": {
+            "S": "J3",
+            "H": "832",
+            "D": "JT54",
+            "C": "Q763"
+          },
+          "dealer": "E",
+          "thusFar": [
+            {
+              "seat": "E",
+              "call": "1H",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "S",
+              "call": "X",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2H",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P X 2N 3C AP",
+          "notes": "After the initial pass limits the hand, 2N might be better as scrambling."
+        },
+        {
+          "num": 21,
+          "sHand": {
+            "S": "A932",
+            "H": "7",
+            "D": "AQ654",
+            "C": "K83"
+          },
+          "nHand": {
+            "S": "QJ5",
+            "H": "J643",
+            "D": "297",
+            "C": "942"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2H",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P X 3D AP",
+          "notes": "It should be understood that the double of the pre-empt by the opener can be light. There is a lot of upside to this. You can complete and you can also trap. But moreso over 2H than 2S"
+        },
+        {
+          "num": 22,
+          "sHand": {
+            "S": "A92",
+            "H": "7",
+            "D": "KQ9854",
+            "C": "A83"
+          },
+          "nHand": {
+            "S": "QJ5",
+            "H": "KJ943",
+            "D": "26",
+            "C": "K42"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2H",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P X AP",
+          "notes": "This is the trap"
+        },
+        {
+          "num": 23,
+          "sHand": {
+            "S": "AK32",
+            "H": "7",
+            "D": "AQJ54",
+            "C": "K83"
+          },
+          "nHand": {
+            "S": "Q9",
+            "H": "A643",
+            "D": "9T7",
+            "C": "7452"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2H",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P X 3D 3H 3N",
+          "notes": "Lebensohl should exist here"
+        },
+        {
+          "num": 24,
+          "sHand": {
+            "S": "AK32",
+            "H": "3",
+            "D": "AQT65",
+            "C": "K84"
+          },
+          "nHand": {
+            "S": "Q9",
+            "H": "Q645",
+            "D": "J9",
+            "C": "76532"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2H",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "P X 2N 3C AP",
+          "notes": "Lebensohl should exist here"
+        },
+        {
+          "num": 25,
+          "sHand": {
+            "S": "96",
+            "H": "8",
+            "D": "AKJ863",
+            "C": "A874"
+          },
+          "nHand": {
+            "S": "QJ54",
+            "H": "J643",
+            "D": "Q97",
+            "C": "93"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1D",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "2H",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "3D AP",
+          "notes": "You cannot afford to double with only doubleton spade. Just balance. If you have G/B 2N, that would be optimal"
+        },
+        {
+          "num": 26,
+          "sHand": {
+            "S": "AQ94",
+            "H": "K32",
+            "D": "AQ87",
+            "C": "84"
+          },
+          "nHand": {
+            "S": "KJ65",
+            "H": "AJ87",
+            "D": "93",
+            "C": "562"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "3C",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "X",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "4C 4S AP",
+          "notes": "It\u2019s usually beneficial to overbid a little if it means getting the strain right. 4C is a choice of game bid is much more useful than a vague slam interest bid"
+        },
+        {
+          "num": 27,
+          "sHand": {
+            "S": "AQ94",
+            "H": "K32",
+            "D": "AQ87",
+            "C": "74"
+          },
+          "nHand": {
+            "S": "2",
+            "H": "AQ85",
+            "D": "K9264",
+            "C": "J32"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "3C",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "X",
+              "isOpp": true,
+              "implicit": false
+            }
+          ],
+          "suggested": "4C 4S 5D AP",
+          "notes": "5D could be wrong, but playing 4H in a 4-3 fit when the long trump has the shortness can go wrong in so many different ways."
+        },
+        {
+          "num": 28,
+          "sHand": {
+            "S": "7",
+            "H": "A832",
+            "D": "AK964",
+            "C": "543"
+          },
+          "nHand": {
+            "S": "932",
+            "H": "KQ94",
+            "D": "Q",
+            "C": "AJ972"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1S",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "X",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "3S",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "X 4D 4H AP",
+          "notes": "X gives you the choice of games now since the cuebid is obviously too high"
+        },
+        {
+          "num": 29,
+          "sHand": {
+            "S": "Q9765",
+            "H": "A4",
+            "D": "82",
+            "C": "AQJ3"
+          },
+          "nHand": {
+            "S": "KT8",
+            "H": "K765",
+            "D": "QJ95",
+            "C": "82"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "3H",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "X AP",
+          "notes": "This occurred in a real hand. As the advancer, if you have no good bid but you have defence, I believe passing usually best. Contingent on your willingness to defend doubled contracts."
+        },
+        {
+          "num": 30,
+          "sHand": {
+            "S": "AQJ4",
+            "H": "8",
+            "D": "K65",
+            "C": "AK875"
+          },
+          "nHand": {
+            "S": "963",
+            "H": "A54",
+            "D": "QT84",
+            "C": "J93"
+          },
+          "dealer": "S",
+          "thusFar": [
+            {
+              "seat": "S",
+              "call": "1H",
+              "isOpp": false,
+              "implicit": false
+            },
+            {
+              "seat": "W",
+              "call": "X",
+              "isOpp": true,
+              "implicit": false
+            },
+            {
+              "seat": "N",
+              "call": "3H",
+              "isOpp": false,
+              "implicit": false
+            }
+          ],
+          "suggested": "P X AP",
+          "notes": "This occurred in a real hand. As the advancer, if you have no good bid but you have defence, I believe passing usually best. Contingent on your willingness to defend doubled contracts."
+        }
+      ]
+    },
+    {
+      "name": "Constructive sequences",
+      "hands": [
+        {
+          "num": 1,
+          "sHand": {
+            "S": "983",
+            "H": "92",
+            "D": "AQ84",
+            "C": "AK62"
+          },
+          "nHand": {
+            "S": "42",
+            "H": "AQJ35",
+            "D": "KJ952",
+            "C": "Q"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1D 1H 1N 3D 4D 5D",
+          "notes": "1M rebid 3X showing 55 is a nice descriptive bid to have"
+        },
+        {
+          "num": 2,
+          "sHand": {
+            "S": "KJ5",
+            "H": "Q4",
+            "D": "8764",
+            "C": "AQ93"
+          },
+          "nHand": {
+            "S": "AQ76",
+            "H": "AKJ85",
+            "D": "3",
+            "C": "542"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1D 1H 1N 2S 2N 3C 4H",
+          "notes": "Once responder can pattern out the hand, it\u2019s easy to find the 5-2 H fit"
+        },
+        {
+          "num": 3,
+          "sHand": {
+            "S": "AQ543",
+            "H": "K6",
+            "D": "A85",
+            "C": "AJ9"
+          },
+          "nHand": {
+            "S": "K67",
+            "H": "Q987",
+            "D": "JT64",
+            "C": "Q2"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1S 2S 3N AP",
+          "notes": "5332 should always suggest 3N when strong enough. The other hand obviously passes with the soft HCP"
+        },
+        {
+          "num": 4,
+          "sHand": {
+            "S": "AQJ54",
+            "H": "83",
+            "D": "9",
+            "C": "AKJ92"
+          },
+          "nHand": {
+            "S": "K6",
+            "H": "A754",
+            "D": "2763",
+            "C": "Q54"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1S 1N 2C 2S 3C 5C",
+          "notes": ""
+        },
+        {
+          "num": 5,
+          "sHand": {
+            "S": "AJT73",
+            "H": "K4",
+            "D": "6",
+            "C": "AK942"
+          },
+          "nHand": {
+            "S": "KQ",
+            "H": "7653",
+            "D": "982",
+            "C": "QJ85"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1S 1N 2C 2S 3C 4S",
+          "notes": ""
+        },
+        {
+          "num": 6,
+          "sHand": {
+            "S": "AQ974",
+            "H": "8",
+            "D": "Q2",
+            "C": "AKJ54"
+          },
+          "nHand": {
+            "S": "J5",
+            "H": "A963",
+            "D": "8543",
+            "C": "Q76"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1S 1N 2C 2S 3C AP",
+          "notes": ""
+        },
+        {
+          "num": 7,
+          "sHand": {
+            "S": "AKJ654",
+            "H": "73",
+            "D": "Q",
+            "C": "AJ97"
+          },
+          "nHand": {
+            "S": "Q7",
+            "H": "JT64",
+            "D": "964",
+            "C": "KT62"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1S 1N 2C 2S 3S 4S",
+          "notes": ""
+        },
+        {
+          "num": 8,
+          "sHand": {
+            "S": "AKJ654",
+            "H": "73",
+            "D": "Q",
+            "C": "AJ97"
+          },
+          "nHand": {
+            "S": "Q7",
+            "H": "KJ94",
+            "D": "JT87",
+            "C": "853"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1S 1N 2C 2S 3S AP",
+          "notes": ""
+        },
+        {
+          "num": 9,
+          "sHand": {
+            "S": "K72",
+            "H": "AK942",
+            "D": "AT53",
+            "C": "6"
+          },
+          "nHand": {
+            "S": "AT63",
+            "H": "QT5",
+            "D": "KJ42",
+            "C": "AK"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1H 2C 2D 2H 2S 3C 3D 3H 3S \u2026",
+          "notes": "As long as responder doesn\u2019t make the mistake of responding 1S, slam should be quite biddable"
+        },
+        {
+          "num": 10,
+          "sHand": {
+            "S": "932",
+            "H": "5",
+            "D": "AK432",
+            "C": "A876"
+          },
+          "nHand": {
+            "S": "A64",
+            "H": "J864",
+            "D": "Q965",
+            "C": "KQ"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1D 1H 2C 2S 3C 3D 3S 3N",
+          "notes": "Importantly, what is the catchall after 2S? I think it should always be the lowest possible bid, insofar as it does not show 6+M. Eg, after a 1M opening"
+        },
+        {
+          "num": 11,
+          "sHand": {
+            "S": "Q942",
+            "H": "7",
+            "D": "K53",
+            "C": "AK842"
+          },
+          "nHand": {
+            "S": "K5",
+            "H": "T654",
+            "D": "AQ8",
+            "C": "QJ93"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1C 1H 1S 2D 2S 2N 3D 4C 4D 4S 5C",
+          "notes": "After 1m-1h-1s, after GF, 2s should just be 5-4, 3m=6m"
+        },
+        {
+          "num": 12,
+          "sHand": {
+            "S": "KJ54",
+            "H": "7",
+            "D": "63",
+            "C": "AK9852"
+          },
+          "nHand": {
+            "S": "A6",
+            "H": "AJ85",
+            "D": "9785",
+            "C": "QJ6"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1C 1H 1S 2D 3C 4C 4H 5C",
+          "notes": "After 1m-1h-1s, after GF, 2s should just be 5-4, 3m=6m"
+        },
+        {
+          "num": 13,
+          "sHand": {
+            "S": "Q2",
+            "H": "A53",
+            "D": "AK874",
+            "C": "963"
+          },
+          "nHand": {
+            "S": "AJ54",
+            "H": "7",
+            "D": "QJ932",
+            "C": "AJ7"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1D 1S 1N 2D 2N 3D 3S 5D",
+          "notes": "West has to recognise East is not bidding 3D for fun. If he is minimum, he must have some shortage. With AKXXX, you want to encourage partner to bid on. 3S offering 4S as a possible place to play is good. The lack of 3H will encourage partner to bid on if he is short H"
+        },
+        {
+          "num": 14,
+          "sHand": {
+            "S": "AK8732",
+            "H": "AQ5",
+            "D": "7",
+            "C": "942"
+          },
+          "nHand": {
+            "S": "J54",
+            "H": "K832",
+            "D": "K853",
+            "C": "T6"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1S 2S 3H 4H 4S AP",
+          "notes": "Heart HCP are most important by far. Invite by asking for help in hearts"
+        },
+        {
+          "num": 15,
+          "sHand": {
+            "S": "AK954",
+            "H": "6",
+            "D": "AQ3",
+            "C": "K962"
+          },
+          "nHand": {
+            "S": "Q86",
+            "H": "QJ97",
+            "D": "K654",
+            "C": "75"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1S 2S 2N 3C 3H 3S AP",
+          "notes": "You just want to find out about the situation outside of hearts"
+        },
+        {
+          "num": 16,
+          "sHand": {
+            "S": "532",
+            "H": "Q4",
+            "D": "AKJ987",
+            "C": "K5"
+          },
+          "nHand": {
+            "S": "6",
+            "H": "AJ92",
+            "D": "Q253",
+            "C": "A964"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1D 1H 2D 3S 4C 4D 4N 5S 6D",
+          "notes": "The splinter is an incredibly efficient bid. As always, I prefer to overbid if it means getting the strain right. The slam looks acceptable though not mandatory"
+        },
+        {
+          "num": 17,
+          "sHand": {
+            "S": "A843",
+            "H": "72",
+            "D": "K5",
+            "C": "AJ954"
+          },
+          "nHand": {
+            "S": "QJ",
+            "H": "843",
+            "D": "AQ7",
+            "C": "KQT63"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1C 2C 2S 3D 4C 5C",
+          "notes": "2S confirms that 5C is a playable spot. 3D shows diamond values in case 3N is best. 4C ostensibly shows that hearts are an issue, and 5C is a reasonable place to sign off in"
+        },
+        {
+          "num": 18,
+          "sHand": {
+            "S": "A7",
+            "H": "862",
+            "D": "AKJ854",
+            "C": "93"
+          },
+          "nHand": {
+            "S": "KJ5",
+            "H": "KT93",
+            "D": "Q62",
+            "C": "KJT"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1D 1H 2D 3N",
+          "notes": "When you go through a slow sequence, there must be a reason. Partner must be able to infer that there is something you want or something you are suggesting. If you are set on only one thing, then don\u2019t use the slow sequence lest you mislead your partner."
+        },
+        {
+          "num": 19,
+          "sHand": {
+            "S": "K72",
+            "H": "A3",
+            "D": "AQ854",
+            "C": "J32"
+          },
+          "nHand": {
+            "S": "AJ",
+            "H": "KQ854",
+            "D": "JT63",
+            "C": "Q4"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1D 1H 1N 2D 2N 3N",
+          "notes": "Crucially, responder has no reason to be bidding 3D. You only really want to play in 3N with your semi-balanced hand and scattered points. Do not mislead partner and do not bleed information"
+        },
+        {
+          "num": 20,
+          "sHand": {
+            "S": "76",
+            "H": "AJ532",
+            "D": "AK93",
+            "C": "72"
+          },
+          "nHand": {
+            "S": "AKJ54",
+            "H": "Q9",
+            "D": "Q24",
+            "C": "K54"
+          },
+          "dealer": "S",
+          "thusFar": [],
+          "suggested": "1H 1S 2D 3C 3D 3N",
+          "notes": "To recapitulate, 3D should be the catchall in this sequence rather than 3H. Because the most important thing to clarify is if there is a 6-2M fit"
+        }
+      ]
+    }
+  ]
+}

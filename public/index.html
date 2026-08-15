@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Second Hand &mdash; Bidding Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <header class="top-bar">
+    <div class="brand">
+      <span class="brand-suits"><i class="s">&spades;</i><i class="h">&hearts;</i><i class="d">&diams;</i><i class="c">&clubs;</i></span>
+      <span class="brand-name">Second Hand</span>
+    </div>
+    <div id="sessionMeta" class="session-meta hidden"></div>
+  </header>
+
+  <main id="view"></main>
+
+  <div id="toast" class="toast hidden"></div>
+
+</div>
+
+<script type="module" src="firebase-init.js"></script>
+<script type="module" src="auction.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
