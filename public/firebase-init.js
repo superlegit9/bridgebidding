@@ -3,12 +3,12 @@
 // This is safe to expose publicly - it is not a secret, it just tells the
 // SDK which project to talk to. Access is controlled by firestore.rules.
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyCem5EbVUeKJUihyEppP1iPEh6aYNNvKhc",
+  authDomain: "coaching-u26.firebaseapp.com",
+  projectId: "coaching-u26",
+  storageBucket: "coaching-u26.firebasestorage.app",
+  messagingSenderId: "928921692411",
+  appId: "1:928921692411:web:b95f23533ee39461db685e",
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
