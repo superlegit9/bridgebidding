@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Second Hand &mdash; Bidding Practice</title>
+<title>Poor Man's Cuebids</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
@@ -139,10 +139,11 @@ button.primary:hover { background: var(--brass-bright); }
 
 .table-layout {
   display: grid;
-  grid-template-columns: 1fr 1.2fr 1fr;
+  grid-template-columns: 1fr 320px;
   gap: 18px;
   align-items: start;
 }
+.left-col { display: flex; flex-direction: column; gap: 14px; }
 @media (max-width: 760px) {
   .table-layout { grid-template-columns: 1fr; }
 }
@@ -205,7 +206,8 @@ button.primary:hover { background: var(--brass-bright); }
 }
 
 /* ---------- bid box ---------- */
-.bid-box { margin-top: 22px; background: rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.bid-box { background: rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.bid-box.waiting-box { display: flex; align-items: center; justify-content: center; min-height: 200px; text-align: center; }
 .bid-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
 .bid-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .bid-btn {
@@ -255,7 +257,7 @@ button.primary:hover { background: var(--brass-bright); }
   <header class="top-bar">
     <div class="brand">
       <span class="brand-suits"><i class="s">&spades;</i><i class="h">&hearts;</i><i class="d">&diams;</i><i class="c">&clubs;</i></span>
-      <span class="brand-name">Second Hand</span>
+      <span class="brand-name">Poor Man's Cuebids</span>
     </div>
     <div id="sessionMeta" class="session-meta hidden"></div>
   </header>
@@ -439,7 +441,6 @@ function renderLanding() {
   sessionMetaEl.classList.add('hidden');
   viewEl.innerHTML = `
     <div class="landing">
-      <p class="tagline">Bidding practice for partnerships. Two seats, one auction, no peeking.</p>
       <div class="tabs">
         <button class="tab-btn active" data-tab="start">Start a session</button>
         <button class="tab-btn" data-tab="join">Join a session</button>
@@ -576,8 +577,10 @@ function renderHandForSession(code, session, myName) {
     dbPut(`bidding_practice/${code}/hands/${currentPos}/revealed`, true).catch(() => {});
   }
 
-  const myHand = mySeat === 'S' ? hand.sHand : hand.nHand;
-  const otherSeat = mySeat === 'S' ? 'N' : 'S';
+  const northVisible = mySeat === 'N' || state.over;
+  const southVisible = mySeat === 'S' || state.over;
+  const northLabel = mySeat === 'N' ? `${nName} (you)` : nName;
+  const southLabel = mySeat === 'S' ? `${sName} (you)` : sName;
 
   viewEl.innerHTML = `
     <div class="game">
@@ -587,31 +590,36 @@ function renderHandForSession(code, session, myName) {
       </div>
 
       <div class="table-layout">
-        <div class="hand-panel mine">
-          <h2>Your hand</h2>
-          ${renderHandSuits(myHand)}
+        <div class="left-col">
+          <div class="hand-panel ${mySeat === 'N' ? 'mine' : 'other'} ${northVisible ? '' : 'blurred'}">
+            <h2>North &mdash; ${northLabel}</h2>
+            ${northVisible ? renderHandSuits(hand.nHand) : `<div class="locked">Revealed once the auction ends</div>`}
+          </div>
+
+          <div class="auction-panel">
+            <table class="auction-table">
+              <thead><tr><th>N</th><th>E</th><th>S</th><th>W</th></tr></thead>
+              <tbody>${renderAuctionRows(state.full)}</tbody>
+            </table>
+            ${state.over
+              ? `<div class="contract-line">${formatContract(state.contract)}</div>`
+              : isMyTurn
+                ? `<div class="turn-line mine">Your bid</div>`
+                : `<div class="turn-line">Waiting for ${otherName}&hellip;</div>`
+            }
+          </div>
+
+          <div class="hand-panel ${mySeat === 'S' ? 'mine' : 'other'} ${southVisible ? '' : 'blurred'}">
+            <h2>South &mdash; ${southLabel}</h2>
+            ${southVisible ? renderHandSuits(hand.sHand) : `<div class="locked">Revealed once the auction ends</div>`}
+          </div>
         </div>
 
-        <div class="auction-panel">
-          <table class="auction-table">
-            <thead><tr><th>N</th><th>E</th><th>S</th><th>W</th></tr></thead>
-            <tbody>${renderAuctionRows(state.full)}</tbody>
-          </table>
-          ${state.over
-            ? `<div class="contract-line">${formatContract(state.contract)}</div>`
-            : isMyTurn
-              ? `<div class="turn-line mine">Your bid</div>`
-              : `<div class="turn-line">Waiting for ${otherName}&hellip;</div>`
-          }
-        </div>
-
-        <div class="hand-panel other ${state.over ? '' : 'blurred'}">
-          <h2>${otherSeat === 'S' ? sName : nName}'s hand</h2>
-          ${state.over ? renderHandSuits(otherSeat === 'S' ? hand.sHand : hand.nHand) : `<div class="locked">Revealed once the auction ends</div>`}
+        <div class="right-col">
+          ${isMyTurn ? renderBidBox(state) : `<div class="bid-box waiting-box"><p class="muted">${state.over ? 'Auction over.' : `Waiting for ${otherName} to bid.`}</p></div>`}
         </div>
       </div>
 
-      ${isMyTurn ? renderBidBox(state) : ''}
       ${state.over ? renderReveal(hand) : ''}
     </div>
   `;
