@@ -1,0 +1,1 @@
+[build] publish = "public" [[headers]] for = "/*.js" [headers.values] Content-Type = "text/javascript; charset=utf-8" [[redirects]] from = "/*" to = "/index.html" status = 200
