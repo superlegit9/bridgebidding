@@ -207,7 +207,8 @@ button.primary:hover { background: var(--brass-bright); }
 
 /* ---------- bid box ---------- */
 .bid-box { background: rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
-.bid-box.waiting-box { display: flex; align-items: center; justify-content: center; min-height: 200px; text-align: center; }
+.waiting-note { text-align: center; padding: 40px 12px; }
+.reveal { display: flex; flex-direction: column; gap: 14px; }
 .bid-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
 .bid-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .bid-btn {
@@ -226,9 +227,6 @@ button.primary:hover { background: var(--brass-bright); }
 .action-btn[disabled] { opacity: 0.3; cursor: not-allowed; }
 
 /* ---------- reveal ---------- */
-.reveal { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 22px; }
-.reveal-hands { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
-@media (max-width: 560px) { .reveal-hands { grid-template-columns: 1fr; } }
 .suggested, .notes {
   background: rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 8px;
   padding: 14px 16px; margin-bottom: 14px;
@@ -442,7 +440,7 @@ function renderLanding() {
       <section class="pane">
         <label>Your name<input id="myName" type="text" maxlength="30" placeholder="e.g. Alice"></label>
         <label>Partner's name<input id="partnerName" type="text" maxlength="30" placeholder="e.g. Bob"></label>
-        <label>Set to practice <span class="muted">(only matters if you two haven't started one yet)</span>
+        <label>Set to practice <span class="muted">(each set keeps its own separate progress for you two)</span>
           <select id="setSelect">${HANDS_DATA.sets.map((s) => `<option value="${slugify(s.name)}">${s.name} (${s.hands.length} hands)</option>`).join('')}</select>
         </label>
         <button id="goBtn" class="primary">Continue</button>
@@ -457,7 +455,10 @@ function renderLanding() {
     if (!myName || !partnerName) return toast('Enter both names.');
     if (myName.toLowerCase() === partnerName.toLowerCase()) return toast('Names must be different.');
 
-    const key = pairKey(myName, partnerName);
+    const set = HANDS_DATA.sets.find((s) => slugify(s.name) === setId);
+    if (!set) return toast('Choose a set.');
+
+    const key = `${pairKey(myName, partnerName)}--${setId}`;
     const existing = await dbGet(`bidding_practice/${key}`).catch(() => null);
 
     if (existing) {
@@ -465,8 +466,6 @@ function renderLanding() {
       return enterGame(key, myName);
     }
 
-    const set = HANDS_DATA.sets.find((s) => slugify(s.name) === setId);
-    if (!set) return toast('Choose a set.');
     await dbPut(`bidding_practice/${key}`, {
       hostName: myName, partnerName,
       setId, setName: set.name,
@@ -582,11 +581,14 @@ function renderHandForSession(code, session, myName) {
         </div>
 
         <div class="right-col">
-          ${isMyTurn ? renderBidBox(state) : `<div class="bid-box waiting-box"><p class="muted">${state.over ? 'Auction over.' : `Waiting for ${otherName} to bid.`}</p></div>`}
+          ${state.over
+            ? renderReveal(hand)
+            : isMyTurn
+              ? renderBidBox(state)
+              : `<p class="muted waiting-note">Waiting for ${otherName} to bid.</p>`
+          }
         </div>
       </div>
-
-      ${state.over ? renderReveal(hand) : ''}
     </div>
   `;
 
@@ -705,10 +707,6 @@ function wireBidBox(code, pos, hs, state) {
 function renderReveal(hand) {
   return `
     <div class="reveal">
-      <div class="reveal-hands">
-        <div class="hand-panel"><h2>South</h2>${renderHandSuits(hand.sHand)}</div>
-        <div class="hand-panel"><h2>North</h2>${renderHandSuits(hand.nHand)}</div>
-      </div>
       ${hand.suggested ? `<div class="suggested"><h3>Suggested sequence</h3><p>${escapeHtml(hand.suggested)}</p></div>` : ''}
       ${hand.notes ? `<div class="notes"><h3>Notes</h3><p>${escapeHtml(hand.notes)}</p></div>` : ''}
       <button id="nextHandBtn" class="primary">Next hand</button>
