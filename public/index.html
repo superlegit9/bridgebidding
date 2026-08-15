@@ -405,12 +405,6 @@ function toast(msg, ms = 3200) {
   clearTimeout(toast._t);
   toast._t = setTimeout(() => toastEl.classList.add('hidden'), ms);
 }
-function genCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let s = '';
-  for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
-  return s;
-}
 function saveLocal(code, name) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ code, name }));
 }
@@ -425,6 +419,10 @@ function getHand(setId, num) {
 }
 function slugify(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+function pairKey(nameA, nameB) {
+  const pair = [slugify(nameA), slugify(nameB)].sort();
+  return `${pair[0]}--${pair[1]}`;
 }
 
 // ---------- boot ----------
@@ -441,83 +439,51 @@ function renderLanding() {
   sessionMetaEl.classList.add('hidden');
   viewEl.innerHTML = `
     <div class="landing">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="start">Start a session</button>
-        <button class="tab-btn" data-tab="join">Join a session</button>
-      </div>
-
-      <section id="startPane" class="pane">
-        <label>Your name<input id="hostName" type="text" maxlength="30" placeholder="e.g. Alice"></label>
+      <section class="pane">
+        <label>Your name<input id="myName" type="text" maxlength="30" placeholder="e.g. Alice"></label>
         <label>Partner's name<input id="partnerName" type="text" maxlength="30" placeholder="e.g. Bob"></label>
-        <label>Set to practice
+        <label>Set to practice <span class="muted">(only matters if you two haven't started one yet)</span>
           <select id="setSelect">${HANDS_DATA.sets.map((s) => `<option value="${slugify(s.name)}">${s.name} (${s.hands.length} hands)</option>`).join('')}</select>
         </label>
-        <button id="createBtn" class="primary">Create session</button>
-      </section>
-
-      <section id="joinPane" class="pane hidden">
-        <label>Session code<input id="joinCode" type="text" maxlength="6" style="text-transform:uppercase" placeholder="e.g. K7QX2M"></label>
-        <label>Your name<input id="joinName" type="text" maxlength="30" placeholder="the name your partner entered for you"></label>
-        <button id="joinBtn" class="primary">Join session</button>
+        <button id="goBtn" class="primary">Continue</button>
       </section>
     </div>
   `;
 
-  document.querySelectorAll('.tab-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      const which = btn.dataset.tab;
-      document.getElementById('startPane').classList.toggle('hidden', which !== 'start');
-      document.getElementById('joinPane').classList.toggle('hidden', which !== 'join');
-    });
-  });
-
-  document.getElementById('createBtn').addEventListener('click', async () => {
-    const hostName = document.getElementById('hostName').value.trim();
+  document.getElementById('goBtn').addEventListener('click', async () => {
+    const myName = document.getElementById('myName').value.trim();
     const partnerName = document.getElementById('partnerName').value.trim();
     const setId = document.getElementById('setSelect').value;
-    if (!hostName || !partnerName) return toast('Enter both names.');
-    if (hostName.toLowerCase() === partnerName.toLowerCase()) return toast('Names must be different.');
+    if (!myName || !partnerName) return toast('Enter both names.');
+    if (myName.toLowerCase() === partnerName.toLowerCase()) return toast('Names must be different.');
+
+    const key = pairKey(myName, partnerName);
+    const existing = await dbGet(`bidding_practice/${key}`).catch(() => null);
+
+    if (existing) {
+      saveLocal(key, myName);
+      return enterGame(key, myName);
+    }
+
     const set = HANDS_DATA.sets.find((s) => slugify(s.name) === setId);
     if (!set) return toast('Choose a set.');
-
-    let code = genCode();
-    for (let i = 0; i < 5; i++) {
-      const existing = await dbGet(`bidding_practice/${code}`).catch(() => null);
-      if (!existing) break;
-      code = genCode();
-    }
-    await dbPut(`bidding_practice/${code}`, {
-      hostName, partnerName,
+    await dbPut(`bidding_practice/${key}`, {
+      hostName: myName, partnerName,
       setId, setName: set.name,
       handNums: set.hands.map((h) => h.num),
       currentPos: 0,
       createdAt: Date.now(),
       hands: {},
     });
-    saveLocal(code, hostName);
-    enterGame(code, hostName);
-  });
-
-  document.getElementById('joinBtn').addEventListener('click', async () => {
-    const code = document.getElementById('joinCode').value.trim().toUpperCase();
-    const name = document.getElementById('joinName').value.trim();
-    if (!code || !name) return toast('Enter the session code and your name.');
-    const session = await dbGet(`bidding_practice/${code}`).catch(() => null);
-    if (!session) return toast('No session found with that code.');
-    if (name.toLowerCase() !== session.hostName.toLowerCase() && name.toLowerCase() !== session.partnerName.toLowerCase()) {
-      return toast("That name wasn't used to start this session.");
-    }
-    saveLocal(code, name);
-    enterGame(code, name);
+    saveLocal(key, myName);
+    enterGame(key, myName);
   });
 }
 
 // ---------- game (polling-based sync) ----------
 function enterGame(code, myName) {
   sessionMetaEl.classList.remove('hidden');
-  sessionMetaEl.innerHTML = `<span class="code-pill">${code}</span> <button id="leaveBtn" class="link-btn">Leave session</button>`;
+  sessionMetaEl.innerHTML = `<button id="leaveBtn" class="link-btn">Leave session</button>`;
   document.getElementById('leaveBtn').addEventListener('click', () => {
     clearLocal();
     if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
