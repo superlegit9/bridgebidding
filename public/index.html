@@ -3,15 +3,255 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Poor man's Cuebids &mdash; Bidding Practice</title>
+<title>Second Hand &mdash; Bidding Practice</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  --felt: #163427;
+  --felt-dark: #0f2419;
+  --cream: #f6f1e4;
+  --cream-dim: #e9e1cb;
+  --brass: #c69a3a;
+  --brass-bright: #e4b653;
+  --ink: #1c1c1c;
+  --red: #a13a3a;
+  --black: #1c1c1c;
+  --line: rgba(198, 154, 58, 0.35);
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Source Sans 3', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top, rgba(255,255,255,0.05), transparent 60%),
+    var(--felt);
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.03) 0, transparent 40%),
+    linear-gradient(160deg, var(--felt) 0%, var(--felt-dark) 100%);
+  color: var(--cream);
+  font-family: var(--font-body);
+}
+
+#app { min-height: 100vh; display: flex; flex-direction: column; }
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand-suits i { font-style: normal; margin-right: 2px; font-size: 0.85em; }
+.brand-suits .s, .brand-suits .c { color: var(--cream); }
+.brand-suits .h, .brand-suits .d { color: #c96a6a; }
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.4rem;
+  letter-spacing: 0.01em;
+  color: var(--brass-bright);
+}
+
+.session-meta { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
+.code-pill {
+  font-family: var(--font-mono);
+  background: rgba(198,154,58,0.15);
+  border: 1px solid var(--line);
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+  color: var(--brass-bright);
+}
+.code-pill.big { font-size: 1.3rem; padding: 8px 16px; }
+
+.link-btn {
+  background: none; border: none; color: var(--cream-dim);
+  text-decoration: underline; cursor: pointer; font-size: 0.85rem;
+  font-family: var(--font-body);
+}
+.link-btn:hover { color: var(--brass-bright); }
+
+main#view { flex: 1; display: flex; justify-content: center; padding: 32px 20px 60px; }
+
+/* ---------- landing ---------- */
+.landing { max-width: 440px; width: 100%; }
+.tagline {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--cream-dim);
+  text-align: center;
+  margin-bottom: 28px;
+  font-weight: 500;
+}
+.tabs { display: flex; gap: 2px; margin-bottom: 20px; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 4px; }
+.tab-btn {
+  flex: 1; padding: 10px; background: none; border: none; color: var(--cream-dim);
+  cursor: pointer; border-radius: 6px; font-family: var(--font-body); font-weight: 600; font-size: 0.92rem;
+}
+.tab-btn.active { background: var(--brass); color: var(--felt-dark); }
+.pane { display: flex; flex-direction: column; gap: 14px; }
+.pane.hidden { display: none; }
+.pane label { display: flex; flex-direction: column; gap: 6px; font-size: 0.88rem; color: var(--cream-dim); }
+.pane input, .pane select {
+  background: var(--cream);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-family: var(--font-body);
+}
+button.primary {
+  background: var(--brass);
+  color: var(--felt-dark);
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.15s;
+}
+button.primary:hover { background: var(--brass-bright); }
+
+/* ---------- waiting / complete ---------- */
+.waiting, .complete { max-width: 480px; text-align: center; margin-top: 40px; }
+.waiting h1, .complete h1 { font-family: var(--font-display); color: var(--brass-bright); }
+.muted { color: var(--cream-dim); font-size: 0.9rem; }
+
+/* ---------- game ---------- */
+.game { width: 100%; max-width: 900px; }
+.hand-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 18px; font-size: 0.92rem; color: var(--cream-dim);
+}
+.set-label { font-family: var(--font-display); color: var(--brass-bright); font-weight: 600; }
+.seat-badge strong { color: var(--brass-bright); }
+
+.table-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+@media (max-width: 760px) {
+  .table-layout { grid-template-columns: 1fr; }
+}
+
+.hand-panel {
+  background: var(--cream);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 16px 18px;
+  position: relative;
+  min-height: 150px;
+}
+.hand-panel h2 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  margin: 0 0 10px;
+  color: var(--felt);
+  border-bottom: 1px solid var(--cream-dim);
+  padding-bottom: 6px;
+}
+.suit-row {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  display: flex;
+  gap: 10px;
+  padding: 3px 0;
+  letter-spacing: 0.03em;
+}
+.suit-row i { font-style: normal; width: 18px; text-align: center; }
+.suit-row .s, .suit-row .c { color: var(--black); }
+.suit-row .h, .suit-row .d { color: var(--red); }
+
+.hand-panel.other.blurred .locked {
+  display: flex; align-items: center; justify-content: center;
+  height: 110px; color: #8a8370; font-size: 0.85rem; text-align: center;
+  font-style: italic;
+}
+
+.auction-panel {
+  background: rgba(0,0,0,0.18);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+}
+.auction-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.92rem; }
+.auction-table th {
+  color: var(--brass-bright); font-weight: 600; padding: 4px 0; border-bottom: 1px solid var(--line);
+}
+.auction-table td { text-align: center; padding: 5px 2px; }
+.call.pass { color: var(--cream-dim); font-style: italic; }
+.call.dbl { color: var(--brass-bright); font-weight: 700; }
+.call.red { color: #d98f8f; font-weight: 600; }
+.call.black { color: var(--cream); font-weight: 600; }
+
+.turn-line { text-align: center; margin-top: 10px; font-size: 0.9rem; color: var(--cream-dim); }
+.turn-line.mine { color: var(--brass-bright); font-weight: 700; }
+.contract-line {
+  text-align: center; margin-top: 12px; font-family: var(--font-display);
+  font-size: 1.05rem; color: var(--brass-bright);
+}
+
+/* ---------- bid box ---------- */
+.bid-box { margin-top: 22px; background: rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.bid-grid { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.bid-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.bid-btn {
+  font-family: var(--font-mono); font-size: 0.95rem; padding: 8px 4px;
+  border-radius: 5px; border: 1px solid var(--line); background: var(--cream); cursor: pointer;
+}
+.bid-btn.red { color: var(--red); }
+.bid-btn.black { color: var(--black); }
+.bid-btn[disabled] { opacity: 0.25; cursor: not-allowed; }
+.bid-actions { display: flex; gap: 10px; }
+.action-btn {
+  flex: 1; padding: 10px; border-radius: 6px; border: none; cursor: pointer; font-weight: 700;
+}
+.action-btn.pass { background: var(--cream-dim); color: var(--felt-dark); }
+.action-btn.dbl { background: var(--brass); color: var(--felt-dark); }
+.action-btn[disabled] { opacity: 0.3; cursor: not-allowed; }
+
+/* ---------- reveal ---------- */
+.reveal { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 22px; }
+.reveal-hands { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+@media (max-width: 560px) { .reveal-hands { grid-template-columns: 1fr; } }
+.suggested, .notes {
+  background: rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 8px;
+  padding: 14px 16px; margin-bottom: 14px;
+}
+.suggested h3, .notes h3 {
+  font-family: var(--font-display); margin: 0 0 8px; color: var(--brass-bright); font-size: 0.95rem;
+}
+.suggested p, .notes p { margin: 0; line-height: 1.5; color: var(--cream-dim); font-family: var(--font-mono); font-size: 0.92rem; }
+.notes p { font-family: var(--font-body); }
+
+/* ---------- toast ---------- */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--brass); color: var(--felt-dark); padding: 10px 18px;
+  border-radius: 6px; font-weight: 600; font-size: 0.9rem; box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  z-index: 100;
+}
+.toast.hidden { display: none; }
+.hidden { display: none !important; }
+
+</style>
 </head>
 <body>
 
 <div id="app">
-
   <header class="top-bar">
     <div class="brand">
       <span class="brand-suits"><i class="s">&spades;</i><i class="h">&hearts;</i><i class="d">&diams;</i><i class="c">&clubs;</i></span>
@@ -19,15 +259,512 @@
     </div>
     <div id="sessionMeta" class="session-meta hidden"></div>
   </header>
-
   <main id="view"></main>
-
   <div id="toast" class="toast hidden"></div>
-
 </div>
 
-<script type="module" src="firebase-init.js"></script>
-<script type="module" src="auction.js"></script>
-<script type="module" src="app.js"></script>
+<script>
+// ============ embedded hand data (baked in at build time) ============
+const HANDS_DATA = {"sets":[{"name":"FFB","hands":[{"num":1,"sHand":{"S":"973","H":"AQJ65","D":"Q","C":"K532"},"nHand":{"S":"J84","H":"T7","D":"AJ9876","C":"A6"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false}],"suggested":"2H AP","notes":"Don't bother showing the clubs. 2H is a convenient catchall"},{"num":2,"sHand":{"S":"72","H":"AKJ643","D":"Q5","C":"K43"},"nHand":{"S":"J83","H":"T5","D":"AJ9876","C":"A5"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false}],"suggested":"3H 4H","notes":"3H should be invitational and non-forcing. Same if it is a minor"},{"num":3,"sHand":{"S":"72","H":"AKQ953","D":"K2","C":"QJ5"},"nHand":{"S":"K93","H":"T6","D":"QJ6543","C":"A4"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false}],"suggested":"2S 3D 3H 4H","notes":"Cuebid when game forcing, generally"},{"num":4,"sHand":{"S":"7","H":"AKT643","D":"J65","C":"K93"},"nHand":{"S":"AK982","H":"J5","D":"T7","C":"Q875"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3H AP","notes":"3X rebid NF"},{"num":5,"sHand":{"S":"Q2","H":"AKQ953","D":"62","C":"QJ5"},"nHand":{"S":"AK987","H":"J6","D":"T7","C":"9876"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3D 3H 4H","notes":"Cuebid when game forcing, generally"},{"num":6,"sHand":{"S":"92","H":"AKJ73","D":"652","C":"A75"},"nHand":{"S":"AKJ87","H":"5","D":"A74","C":"KJ32"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3D 3N","notes":"Do not lie about the heart length. You had to lie about shape or strength, the latter is usually preferable"},{"num":7,"sHand":{"S":"Q2","H":"AKJ73","D":"652","C":"Q75"},"nHand":{"S":"AKJ87","H":"5","D":"A74","C":"AJ32"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3D 3N/ 3D 3S 4S","notes":"Do not lie about the heart length"},{"num":8,"sHand":{"S":"K2","H":"AK9753","D":"92","C":"AJ5"},"nHand":{"S":"AQ9834","H":"2","D":"J54","C":"K73"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3D 3S 4S","notes":"Cuebid when game forcing, generally"},{"num":9,"sHand":{"S":"9","H":"Q5","D":"AQ963","C":"AJ852"},"nHand":{"S":"AQT63","H":"J86","D":"KT2","C":"73"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"2H","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3C 3D AP","notes":"New suit only F1"},{"num":10,"sHand":{"S":"K9","H":"5","D":"AQ963","C":"AJ852"},"nHand":{"S":"AQT63","H":"J87","D":"KT2","C":"73"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"2H","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3C 3D 3S 4S","notes":"New suit only F1"},{"num":11,"sHand":{"S":"73","H":"AQ873","D":"9","C":"AQ954"},"nHand":{"S":"AQT64","H":"JT","D":"KT52","C":"73"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3C 3H AP","notes":"New suit only F1"},{"num":12,"sHand":{"S":"K3","H":"A9873","D":"97","C":"AQ95"},"nHand":{"S":"AQT64","H":"JT","D":"K2","C":"K842"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3C 3D 3S 4S","notes":"New suit only F1"},{"num":13,"sHand":{"S":"73","H":"AQ873","D":"7","C":"AJ965"},"nHand":{"S":"AQT64","H":"KT","D":"982","C":"KQ4"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3C 3D 4C 4H","notes":"New suit only F1"},{"num":14,"sHand":{"S":"7","H":"AQ873","D":"76","C":"AJ965"},"nHand":{"S":"AQJ963","H":"KT","D":"92","C":"K74"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2S","isOpp":false,"implicit":false}],"suggested":"3C 3S 4S","notes":"3S is game forcing"},{"num":15,"sHand":{"S":"93","H":"J82","D":"K9","C":"AQJ853"},"nHand":{"S":"T84","H":"AQ","D":"AT8754","C":"62"},"dealer":"S","thusFar":[{"seat":"S","call":"1C","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"3C AP","notes":"Free bid of minor should be NF"},{"num":16,"sHand":{"S":"A3","H":"J82","D":"K9","C":"AQJ853"},"nHand":{"S":"T84","H":"AQ","D":"AT8754","C":"62"},"dealer":"S","thusFar":[{"seat":"S","call":"1C","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"X 3D 3N","notes":"Free bid of minor should be NF; X if game forcing or cue if necessary"},{"num":17,"sHand":{"S":"A6","H":"AKJ932","D":"Q63","C":"85"},"nHand":{"S":"K95","H":"T4","D":"AT","C":"AQ6743"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"3C","isOpp":false,"implicit":false}],"suggested":"3H 4H","notes":"3M should be 6+"},{"num":18,"sHand":{"S":"A76","H":"AQJ85","D":"JT4","C":"93"},"nHand":{"S":"K95","H":"T4","D":"A86","C":"AQJ54"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"3C","isOpp":false,"implicit":false}],"suggested":"3D 3N","notes":"Cue as the catchall in sequences where there is no space for a lower catchall"},{"num":19,"sHand":{"S":"732","H":"AKJ43","D":"J53","C":"K4"},"nHand":{"S":"T84","H":"65","D":"AQ9876","C":"A5"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false}],"suggested":"3D AP","notes":"Nothing."},{"num":20,"sHand":{"S":"7","H":"AKJ43","D":"J532","C":"K43"},"nHand":{"S":"A83","H":"65","D":"AQ9876","C":"Q9"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false}],"suggested":"3S 4D 5D","notes":"Strain is always the first priority. Splinter is a very good tool to get you to the right contract"},{"num":21,"sHand":{"S":"7","H":"AKJ43","D":"Q52","C":"A432"},"nHand":{"S":"A83","H":"Q5","D":"AJ987","C":"J95"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false}],"suggested":"2S 2N 3D 3S 4D 4S 5C 5D","notes":"3S to show doubt. You can tolerate playing other strains. Partner should rebid 3N with a balanced hand"},{"num":22,"sHand":{"S":"K9","H":"AQ743","D":"J53","C":"K43"},"nHand":{"S":"T83","H":"K5","D":"AQT876","C":"A5"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false}],"suggested":"3D 3H 3N","notes":"2D should be denying H support so the delayed 3H should be offering 4H as a place to play. Opener elects to play 3N with the KX spade"},{"num":23,"sHand":{"S":"K9","H":"AQ743","D":"J53","C":"K43"},"nHand":{"S":"T83","H":"5","D":"AQ9876","C":"A95"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false}],"suggested":"3D 3S 3N","notes":"3S just to ask stop. Note that it doesn\u2019t necessarily deny one. If your tricks are too slow, you might only want to play 3N with two stoppers"},{"num":24,"sHand":{"S":"K85","H":"72","D":"AQ93","C":"KJ82"},"nHand":{"S":"97","H":"AQJ963","D":"K4","C":"Q97"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2H","isOpp":false,"implicit":false},{"seat":"E","call":"P","isOpp":true,"implicit":true},{"seat":"S","call":"2N","isOpp":false,"implicit":false}],"suggested":"3H 4H","notes":"If 3H is NF the bidding sequence would become extremely clunky because you would need to bid 3S with game forcing hands. Suggest 3H GF"},{"num":25,"sHand":{"S":"QJ5","H":"72","D":"AQ93","C":"KJ82"},"nHand":{"S":"97","H":"AQJ963","D":"K4","C":"Q97"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2H","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"P X 2N 3H 4H","notes":"3H should be invitational and non-forcing. Same if it is a minor. X for a GF hand"},{"num":26,"sHand":{"S":"985","H":"K2","D":"AQ93","C":"A872"},"nHand":{"S":"27","H":"AQJ963","D":"K4","C":"T93"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2H","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"P 3H 4H","notes":"3H should be invitational and non-forcing. Same if it is a minor"},{"num":27,"sHand":{"S":"Q85","H":"T2","D":"AQ93","C":"A872"},"nHand":{"S":"97","H":"AQJ963","D":"KT4","C":"T9"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2H","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"P 3H AP","notes":"3H should be invitational and non-forcing. Same if it is a minor"},{"num":28,"sHand":{"S":"KJ82","H":"72","D":"AQ93","C":"QJ5"},"nHand":{"S":"A97","H":"AQJ963","D":"K74","C":"9"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"2C","isOpp":true,"implicit":false},{"seat":"N","call":"2H","isOpp":false,"implicit":false},{"seat":"E","call":"3C","isOpp":true,"implicit":false}],"suggested":"P 3H 4H","notes":"You can get away with 3H invitational here but not necessarily in analogous bidding sequences"},{"num":29,"sHand":{"S":"K854","H":"K2","D":"T93","C":"AQ72"},"nHand":{"S":"A97","H":"AQJ963","D":"4","C":"K83"},"dealer":"S","thusFar":[{"seat":"S","call":"1C","isOpp":false,"implicit":false},{"seat":"W","call":"2D","isOpp":true,"implicit":false},{"seat":"N","call":"2H","isOpp":false,"implicit":false},{"seat":"E","call":"3D","isOpp":true,"implicit":false}],"suggested":"P 3H 4H","notes":"Should 3H be only invitational, the bidding sequence would become extremely clunky. Difficult for partner to find a rebid after X. Sometimes you also want to play the 6-1 fit. Suggest 3H to be game forcing when opponents have interfered at the three-level"},{"num":30,"sHand":{"S":"985","H":"T82","D":"AQ93","C":"AQ7"},"nHand":{"S":"27","H":"AQJ96","D":"KT4","C":"K98"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2H","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"3H 4H AP","notes":"Nothing."},{"num":31,"sHand":{"S":"98","H":"T82","D":"AQ93","C":"AK73"},"nHand":{"S":"27","H":"AQJ96","D":"KT4","C":"J98"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2H","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"4H AP","notes":"Nothing."},{"num":32,"sHand":{"S":"985","H":"T82","D":"AQ93","C":"AQ7"},"nHand":{"S":"27","H":"K96","D":"KT4","C":"KJT98"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2C","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"3C AP","notes":"Nothing."},{"num":33,"sHand":{"S":"98","H":"T982","D":"AKJ3","C":"AQ7"},"nHand":{"S":"A7","H":"J75","D":"QT4","C":"KJT98"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2C","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"X 2N 3C 3D 3N","notes":"Have to X because you are game forcing. 3C would be too passive"},{"num":34,"sHand":{"S":"9","H":"K75","D":"Q8","C":"AKQ9876"},"nHand":{"S":"AT87","H":"Q6","D":"AJT64","C":"32"},"dealer":"S","thusFar":[{"seat":"S","call":"1C","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"3S 3N AP","notes":"The type of hand that is game forcing but inappropriate to double"},{"num":35,"sHand":{"S":"9","H":"A5","D":"Q842","C":"AKJ987"},"nHand":{"S":"AT8","H":"J96","D":"AKT65","C":"T2"},"dealer":"S","thusFar":[{"seat":"S","call":"1C","isOpp":false,"implicit":false},{"seat":"W","call":"1S","isOpp":true,"implicit":false},{"seat":"N","call":"2D","isOpp":false,"implicit":false},{"seat":"E","call":"2S","isOpp":true,"implicit":false}],"suggested":"4S 4N 5S 5N 7D","notes":"Splinters are a very helpful bid"}]},{"name":"Takeout doubles","hands":[{"num":1,"sHand":{"S":"K85","H":"A876","D":"92","C":"AJ54"},"nHand":{"S":"2Q93","H":"KJ52","D":"763","C":"92"},"dealer":"E","thusFar":[{"seat":"E","call":"1D","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"2S AP","notes":"44M always bid the higher one first so you can show the next one later if necessary"},{"num":2,"sHand":{"S":"K85","H":"AQ76","D":"92","C":"AJ54"},"nHand":{"S":"AQJ93","H":"KT4","D":"834","C":"96"},"dealer":"E","thusFar":[{"seat":"E","call":"1D","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"2D 2H 2S 4S","notes":"It would be good to differentiate 5+M INV from just a 4M constructive type of hand"},{"num":3,"sHand":{"S":"K85","H":"A976","D":"92","C":"AJ54"},"nHand":{"S":"AQJ93","H":"KT4","D":"834","C":"96"},"dealer":"E","thusFar":[{"seat":"E","call":"1D","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"2D 2H 2S AP","notes":"It would be good to differentiate 5+M INV from just a 4M constructive type of hand"},{"num":4,"sHand":{"S":"K875","H":"AQ76","D":"92","C":"AJ5"},"nHand":{"S":"AJ4932","H":"8","D":"534","C":"864"},"dealer":"E","thusFar":[{"seat":"E","call":"1D","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"3S 4S","notes":"It would be good to have a bid for such hands. Playing strength but not strong. I like 3M as such a hand"},{"num":5,"sHand":{"S":"K87","H":"AQ76","D":"832","C":"A95"},"nHand":{"S":"AT4932","H":"8","D":"954","C":"Q64"},"dealer":"E","thusFar":[{"seat":"E","call":"1D","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"3S P","notes":"It would be good to have a bid for such hands. Playing strength but not strong. I like3M as such a hand"},{"num":6,"sHand":{"S":"JT54","H":"K987","D":"A3","C":"AJ9"},"nHand":{"S":"KQ963","H":"2","D":"94","C":"KT852"},"dealer":"E","thusFar":[{"seat":"E","call":"1D","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"4S AP","notes":"Just bid the game"},{"num":7,"sHand":{"S":"7","H":"AQ93","D":"832","C":"AK752"},"nHand":{"S":"JT54","H":"KJT8","D":"AQ74","C":"3"},"dealer":"E","thusFar":[{"seat":"E","call":"1S","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"2S 3H 4H OR 2S 3C 3N 4H","notes":"2S can be regarded as ASK 4H or any GF hand. Either of these treatments are fine. The former forces the doubler to always show 4H first. The latter gives him a bit more leeway but he needs to be confident enough to correct later on"},{"num":8,"sHand":{"S":"8","H":"A943","D":"Q542","C":"AK76"},"nHand":{"S":"9643","H":"KQ85","D":"AJ3","C":"98"},"dealer":"E","thusFar":[{"seat":"E","call":"1S","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"3H 4H","notes":"I\u2019m not comfortable with 3H on four cards either but I\u2019m also not comfortable with 2H on 10HCP either. Somewhat forced to bite the bullet"},{"num":9,"sHand":{"S":"87","H":"AJ3","D":"Q542","C":"AK76"},"nHand":{"S":"963","H":"KQ854","D":"AJ3","C":"98"},"dealer":"E","thusFar":[{"seat":"E","call":"1S","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"2S 3C 3H 4H","notes":"I use this to show an invitational 5H hand instead of lumping it with 3H. Do consider"},{"num":10,"sHand":{"S":"87","H":"AT3","D":"KQ42","C":"AK76"},"nHand":{"S":"963","H":"KJ854","D":"A75","C":"82"},"dealer":"E","thusFar":[{"seat":"E","call":"1S","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"3H 3S 4H AP","notes":"Obviously, the doubler will pass 2H. 3S just to check strain"},{"num":11,"sHand":{"S":"87","H":"AT3","D":"Q542","C":"AK76"},"nHand":{"S":"JT5","H":"96","D":"AK8763","C":"42"},"dealer":"E","thusFar":[{"seat":"E","call":"1S","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"3D AP","notes":"Just don\u2019t bid 2D with this it is too strong. I definitely remember such a sequence happening before"},{"num":12,"sHand":{"S":"K93","H":"82","D":"AKJ5","C":"AK96"},"nHand":{"S":"QJ84","H":"J934","D":"876","C":"54"},"dealer":"E","thusFar":[{"seat":"E","call":"1H","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"1S 2H 2S AP","notes":"What does the cue show? A strong hand that usually does not have support. What is forcing after the cue? I play only a rebid as NF, and everything else as constructive"},{"num":13,"sHand":{"S":"82","H":"AJ95","D":"AK3","C":"AQ76"},"nHand":{"S":"A76","H":"24","D":"QJ75","C":"JT83"},"dealer":"E","thusFar":[{"seat":"E","call":"1S","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"2D 2S 3C 3S 3N OR 1N 2N 3N","notes":""},{"num":14,"sHand":{"S":"AQ3","H":"K654","D":"AJ94","C":"83"},"nHand":{"S":"KJT6","H":"A73","D":"26","C":"Q952"},"dealer":"E","thusFar":[{"seat":"E","call":"1C","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"2S AP","notes":""},{"num":15,"sHand":{"S":"AK73","H":"KQ54","D":"QJ8","C":"83"},"nHand":{"S":"JT986","H":"J7","D":"K6","C":"AT54"},"dealer":"E","thusFar":[{"seat":"E","call":"1C","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false}],"suggested":"2S 3S 4S","notes":""},{"num":16,"sHand":{"S":"A876","H":"3","D":"KQ94","C":"A765"},"nHand":{"S":"KJ954","H":"842","D":"A2","C":"J84"},"dealer":"E","thusFar":[{"seat":"E","call":"1H","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false},{"seat":"W","call":"2H","isOpp":true,"implicit":false}],"suggested":"3S 4S","notes":"2S is not enough when you have 5S and a good hand. Could easily just be 4S and 6-7HCP or 5S 4-5HCP. Would be dangerous for partner to raise under such circumstances because 3S would not be safe"},{"num":17,"sHand":{"S":"92","H":"AK83","D":"643","C":"AK75"},"nHand":{"S":"853","H":"QJ927","D":"AJ9","C":"64"},"dealer":"E","thusFar":[{"seat":"E","call":"1S","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false},{"seat":"W","call":"2S","isOpp":true,"implicit":false}],"suggested":"3H 4H","notes":"Lebensohl should exist here"},{"num":18,"sHand":{"S":"92","H":"AQ83","D":"JT3","C":"AK75"},"nHand":{"S":"534","H":"K5","D":"A7645","C":"832"},"dealer":"E","thusFar":[{"seat":"E","call":"1S","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false},{"seat":"W","call":"2S","isOpp":true,"implicit":false}],"suggested":"2N 3C 3D AP","notes":"Lebensohl should exist here"},{"num":19,"sHand":{"S":"J6","H":"AQ74","D":"965","C":"AK82"},"nHand":{"S":"Q785","H":"K2","D":"AJT83","C":"64"},"dealer":"E","thusFar":[{"seat":"E","call":"1S","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false},{"seat":"W","call":"2S","isOpp":true,"implicit":false}],"suggested":"3D AP","notes":"Though you are extra, game is still very difficult. ~9HCP 5m would bypass lebensohl. EV+ option is to pass"},{"num":20,"sHand":{"S":"AK84","H":"76","D":"KQ9","C":"AJ85"},"nHand":{"S":"J3","H":"832","D":"JT54","C":"Q763"},"dealer":"E","thusFar":[{"seat":"E","call":"1H","isOpp":true,"implicit":false},{"seat":"S","call":"X","isOpp":false,"implicit":false},{"seat":"W","call":"2H","isOpp":true,"implicit":false}],"suggested":"P X 2N 3C AP","notes":"After the initial pass limits the hand, 2N might be better as scrambling."},{"num":21,"sHand":{"S":"A932","H":"7","D":"AQ654","C":"K83"},"nHand":{"S":"QJ5","H":"J643","D":"297","C":"942"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"2H","isOpp":true,"implicit":false}],"suggested":"P X 3D AP","notes":"It should be understood that the double of the pre-empt by the opener can be light. There is a lot of upside to this. You can complete and you can also trap. But moreso over 2H than 2S"},{"num":22,"sHand":{"S":"A92","H":"7","D":"KQ9854","C":"A83"},"nHand":{"S":"QJ5","H":"KJ943","D":"26","C":"K42"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"2H","isOpp":true,"implicit":false}],"suggested":"P X AP","notes":"This is the trap"},{"num":23,"sHand":{"S":"AK32","H":"7","D":"AQJ54","C":"K83"},"nHand":{"S":"Q9","H":"A643","D":"9T7","C":"7452"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"2H","isOpp":true,"implicit":false}],"suggested":"P X 3D 3H 3N","notes":"Lebensohl should exist here"},{"num":24,"sHand":{"S":"AK32","H":"3","D":"AQT65","C":"K84"},"nHand":{"S":"Q9","H":"Q645","D":"J9","C":"76532"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"2H","isOpp":true,"implicit":false}],"suggested":"P X 2N 3C AP","notes":"Lebensohl should exist here"},{"num":25,"sHand":{"S":"96","H":"8","D":"AKJ863","C":"A874"},"nHand":{"S":"QJ54","H":"J643","D":"Q97","C":"93"},"dealer":"S","thusFar":[{"seat":"S","call":"1D","isOpp":false,"implicit":false},{"seat":"W","call":"2H","isOpp":true,"implicit":false}],"suggested":"3D AP","notes":"You cannot afford to double with only doubleton spade. Just balance. If you have G/B 2N, that would be optimal"},{"num":26,"sHand":{"S":"AQ94","H":"K32","D":"AQ87","C":"84"},"nHand":{"S":"KJ65","H":"AJ87","D":"93","C":"562"},"dealer":"S","thusFar":[{"seat":"S","call":"3C","isOpp":false,"implicit":false},{"seat":"W","call":"X","isOpp":true,"implicit":false}],"suggested":"4C 4S AP","notes":"It\u2019s usually beneficial to overbid a little if it means getting the strain right. 4C is a choice of game bid is much more useful than a vague slam interest bid"},{"num":27,"sHand":{"S":"AQ94","H":"K32","D":"AQ87","C":"74"},"nHand":{"S":"2","H":"AQ85","D":"K9264","C":"J32"},"dealer":"S","thusFar":[{"seat":"S","call":"3C","isOpp":false,"implicit":false},{"seat":"W","call":"X","isOpp":true,"implicit":false}],"suggested":"4C 4S 5D AP","notes":"5D could be wrong, but playing 4H in a 4-3 fit when the long trump has the shortness can go wrong in so many different ways."},{"num":28,"sHand":{"S":"7","H":"A832","D":"AK964","C":"543"},"nHand":{"S":"932","H":"KQ94","D":"Q","C":"AJ972"},"dealer":"S","thusFar":[{"seat":"S","call":"1S","isOpp":false,"implicit":false},{"seat":"W","call":"X","isOpp":true,"implicit":false},{"seat":"N","call":"3S","isOpp":false,"implicit":false}],"suggested":"X 4D 4H AP","notes":"X gives you the choice of games now since the cuebid is obviously too high"},{"num":29,"sHand":{"S":"Q9765","H":"A4","D":"82","C":"AQJ3"},"nHand":{"S":"KT8","H":"K765","D":"QJ95","C":"82"},"dealer":"S","thusFar":[{"seat":"S","call":"3H","isOpp":false,"implicit":false}],"suggested":"X AP","notes":"This occurred in a real hand. As the advancer, if you have no good bid but you have defence, I believe passing usually best. Contingent on your willingness to defend doubled contracts."},{"num":30,"sHand":{"S":"AQJ4","H":"8","D":"K65","C":"AK875"},"nHand":{"S":"963","H":"A54","D":"QT84","C":"J93"},"dealer":"S","thusFar":[{"seat":"S","call":"1H","isOpp":false,"implicit":false},{"seat":"W","call":"X","isOpp":true,"implicit":false},{"seat":"N","call":"3H","isOpp":false,"implicit":false}],"suggested":"P X AP","notes":"This occurred in a real hand. As the advancer, if you have no good bid but you have defence, I believe passing usually best. Contingent on your willingness to defend doubled contracts."}]},{"name":"Constructive sequences","hands":[{"num":1,"sHand":{"S":"983","H":"92","D":"AQ84","C":"AK62"},"nHand":{"S":"42","H":"AQJ35","D":"KJ952","C":"Q"},"dealer":"S","thusFar":[],"suggested":"1D 1H 1N 3D 4D 5D","notes":"1M rebid 3X showing 55 is a nice descriptive bid to have"},{"num":2,"sHand":{"S":"KJ5","H":"Q4","D":"8764","C":"AQ93"},"nHand":{"S":"AQ76","H":"AKJ85","D":"3","C":"542"},"dealer":"S","thusFar":[],"suggested":"1D 1H 1N 2S 2N 3C 4H","notes":"Once responder can pattern out the hand, it\u2019s easy to find the 5-2 H fit"},{"num":3,"sHand":{"S":"AQ543","H":"K6","D":"A85","C":"AJ9"},"nHand":{"S":"K67","H":"Q987","D":"JT64","C":"Q2"},"dealer":"S","thusFar":[],"suggested":"1S 2S 3N AP","notes":"5332 should always suggest 3N when strong enough. The other hand obviously passes with the soft HCP"},{"num":4,"sHand":{"S":"AQJ54","H":"83","D":"9","C":"AKJ92"},"nHand":{"S":"K6","H":"A754","D":"2763","C":"Q54"},"dealer":"S","thusFar":[],"suggested":"1S 1N 2C 2S 3C 5C","notes":""},{"num":5,"sHand":{"S":"AJT73","H":"K4","D":"6","C":"AK942"},"nHand":{"S":"KQ","H":"7653","D":"982","C":"QJ85"},"dealer":"S","thusFar":[],"suggested":"1S 1N 2C 2S 3C 4S","notes":""},{"num":6,"sHand":{"S":"AQ974","H":"8","D":"Q2","C":"AKJ54"},"nHand":{"S":"J5","H":"A963","D":"8543","C":"Q76"},"dealer":"S","thusFar":[],"suggested":"1S 1N 2C 2S 3C AP","notes":""},{"num":7,"sHand":{"S":"AKJ654","H":"73","D":"Q","C":"AJ97"},"nHand":{"S":"Q7","H":"JT64","D":"964","C":"KT62"},"dealer":"S","thusFar":[],"suggested":"1S 1N 2C 2S 3S 4S","notes":""},{"num":8,"sHand":{"S":"AKJ654","H":"73","D":"Q","C":"AJ97"},"nHand":{"S":"Q7","H":"KJ94","D":"JT87","C":"853"},"dealer":"S","thusFar":[],"suggested":"1S 1N 2C 2S 3S AP","notes":""},{"num":9,"sHand":{"S":"K72","H":"AK942","D":"AT53","C":"6"},"nHand":{"S":"AT63","H":"QT5","D":"KJ42","C":"AK"},"dealer":"S","thusFar":[],"suggested":"1H 2C 2D 2H 2S 3C 3D 3H 3S \u2026","notes":"As long as responder doesn\u2019t make the mistake of responding 1S, slam should be quite biddable"},{"num":10,"sHand":{"S":"932","H":"5","D":"AK432","C":"A876"},"nHand":{"S":"A64","H":"J864","D":"Q965","C":"KQ"},"dealer":"S","thusFar":[],"suggested":"1D 1H 2C 2S 3C 3D 3S 3N","notes":"Importantly, what is the catchall after 2S? I think it should always be the lowest possible bid, insofar as it does not show 6+M. Eg, after a 1M opening"},{"num":11,"sHand":{"S":"Q942","H":"7","D":"K53","C":"AK842"},"nHand":{"S":"K5","H":"T654","D":"AQ8","C":"QJ93"},"dealer":"S","thusFar":[],"suggested":"1C 1H 1S 2D 2S 2N 3D 4C 4D 4S 5C","notes":"After 1m-1h-1s, after GF, 2s should just be 5-4, 3m=6m"},{"num":12,"sHand":{"S":"KJ54","H":"7","D":"63","C":"AK9852"},"nHand":{"S":"A6","H":"AJ85","D":"9785","C":"QJ6"},"dealer":"S","thusFar":[],"suggested":"1C 1H 1S 2D 3C 4C 4H 5C","notes":"After 1m-1h-1s, after GF, 2s should just be 5-4, 3m=6m"},{"num":13,"sHand":{"S":"Q2","H":"A53","D":"AK874","C":"963"},"nHand":{"S":"AJ54","H":"7","D":"QJ932","C":"AJ7"},"dealer":"S","thusFar":[],"suggested":"1D 1S 1N 2D 2N 3D 3S 5D","notes":"West has to recognise East is not bidding 3D for fun. If he is minimum, he must have some shortage. With AKXXX, you want to encourage partner to bid on. 3S offering 4S as a possible place to play is good. The lack of 3H will encourage partner to bid on if he is short H"},{"num":14,"sHand":{"S":"AK8732","H":"AQ5","D":"7","C":"942"},"nHand":{"S":"J54","H":"K832","D":"K853","C":"T6"},"dealer":"S","thusFar":[],"suggested":"1S 2S 3H 4H 4S AP","notes":"Heart HCP are most important by far. Invite by asking for help in hearts"},{"num":15,"sHand":{"S":"AK954","H":"6","D":"AQ3","C":"K962"},"nHand":{"S":"Q86","H":"QJ97","D":"K654","C":"75"},"dealer":"S","thusFar":[],"suggested":"1S 2S 2N 3C 3H 3S AP","notes":"You just want to find out about the situation outside of hearts"},{"num":16,"sHand":{"S":"532","H":"Q4","D":"AKJ987","C":"K5"},"nHand":{"S":"6","H":"AJ92","D":"Q253","C":"A964"},"dealer":"S","thusFar":[],"suggested":"1D 1H 2D 3S 4C 4D 4N 5S 6D","notes":"The splinter is an incredibly efficient bid. As always, I prefer to overbid if it means getting the strain right. The slam looks acceptable though not mandatory"},{"num":17,"sHand":{"S":"A843","H":"72","D":"K5","C":"AJ954"},"nHand":{"S":"QJ","H":"843","D":"AQ7","C":"KQT63"},"dealer":"S","thusFar":[],"suggested":"1C 2C 2S 3D 4C 5C","notes":"2S confirms that 5C is a playable spot. 3D shows diamond values in case 3N is best. 4C ostensibly shows that hearts are an issue, and 5C is a reasonable place to sign off in"},{"num":18,"sHand":{"S":"A7","H":"862","D":"AKJ854","C":"93"},"nHand":{"S":"KJ5","H":"KT93","D":"Q62","C":"KJT"},"dealer":"S","thusFar":[],"suggested":"1D 1H 2D 3N","notes":"When you go through a slow sequence, there must be a reason. Partner must be able to infer that there is something you want or something you are suggesting. If you are set on only one thing, then don\u2019t use the slow sequence lest you mislead your partner."},{"num":19,"sHand":{"S":"K72","H":"A3","D":"AQ854","C":"J32"},"nHand":{"S":"AJ","H":"KQ854","D":"JT63","C":"Q4"},"dealer":"S","thusFar":[],"suggested":"1D 1H 1N 2D 2N 3N","notes":"Crucially, responder has no reason to be bidding 3D. You only really want to play in 3N with your semi-balanced hand and scattered points. Do not mislead partner and do not bleed information"},{"num":20,"sHand":{"S":"76","H":"AJ532","D":"AK93","C":"72"},"nHand":{"S":"AKJ54","H":"Q9","D":"Q24","C":"K54"},"dealer":"S","thusFar":[],"suggested":"1H 1S 2D 3C 3D 3N","notes":"To recapitulate, 3D should be the catchall in this sequence rather than 3H. Because the most important thing to clarify is if there is a 6-2M fit"}]}]};
+
+// ============ Firebase Realtime Database via plain REST calls ============
+// Project: coaching-u26. No SDK, no auth - matches the suit-combinations
+// app's working pattern. Rules must allow open access under this path:
+//   "bidding_practice": { ".read": true, ".write": true }
+const DB_ROOT = "https://coaching-u26-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+async function dbGet(path) {
+  const res = await fetch(`${DB_ROOT}/${path}.json`);
+  if (!res.ok) throw new Error(`DB read failed (${res.status})`);
+  return res.json();
+}
+async function dbPut(path, value) {
+  const res = await fetch(`${DB_ROOT}/${path}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(value),
+  });
+  if (!res.ok) throw new Error(`DB write failed (${res.status})`);
+  return res.json();
+}
+
+// ============ bidding auction engine ============
+const STRAIN_RANK = { C: 0, D: 1, H: 2, S: 3, N: 4 };
+const STRAIN_SYMBOL = { C: '\u2663', D: '\u2666', H: '\u2665', S: '\u2660', N: 'NT' };
+const ROTATION_FROM_S = ['S', 'W', 'N', 'E'];
+const ROTATION_FROM_E = ['E', 'S', 'W', 'N'];
+
+function seatSide(seat) {
+  return (seat === 'S' || seat === 'N') ? 'us' : 'opp';
+}
+function rotationOrder(dealer) {
+  return dealer === 'E' ? ROTATION_FROM_E : ROTATION_FROM_S;
+}
+function replay(dealer, tokens) {
+  let level = null, strain = null, side = null, doubled = 'none';
+  let passStreak = 0;
+  for (const t of tokens) {
+    const call = t.call;
+    if (call === 'P') { passStreak += 1; continue; }
+    passStreak = 0;
+    if (call === 'X') { doubled = 'X'; continue; }
+    if (call === 'XX') { doubled = 'XX'; continue; }
+    level = parseInt(call[0], 10);
+    strain = call[1];
+    side = seatSide(t.seat);
+    doubled = 'none';
+  }
+  return { level, strain, side, doubled, passStreak };
+}
+function initAuctionState(hand) {
+  const dealer = hand.dealer;
+  const order = rotationOrder(dealer);
+  const thusFar = hand.thusFar.map((t) => ({ seat: t.seat, call: t.call, isOpp: t.isOpp }));
+  let ptr = thusFar.length;
+  const full = thusFar.slice();
+  while (seatSide(order[ptr % 4]) === 'opp') {
+    full.push({ seat: order[ptr % 4], call: 'P', isOpp: true, implicit: true });
+    ptr += 1;
+  }
+  const turnSeat = order[ptr % 4];
+  const r = replay(dealer, full);
+  return {
+    dealer, order, full, liveCalls: [], turnSeat, ptr,
+    contract: { level: r.level, strain: r.strain, side: r.side, doubled: r.doubled },
+    passStreak: r.passStreak,
+    over: r.passStreak >= 3,
+  };
+}
+function legalCalls(state) {
+  if (state.over) return { pass: false, double: false, redouble: false, contract: state.contract };
+  const c = state.contract;
+  const mySide = seatSide(state.turnSeat);
+  const canDouble = c.level !== null && c.side !== mySide && c.doubled === 'none';
+  const canRedouble = c.level !== null && c.side !== mySide && c.doubled === 'X';
+  return { pass: true, double: canDouble, redouble: canRedouble, contract: c };
+}
+function isBidHigher(level, strain, contract) {
+  if (contract.level === null) return true;
+  const a = [level, STRAIN_RANK[strain]];
+  const b = [contract.level, STRAIN_RANK[contract.strain]];
+  return a[0] > b[0] || (a[0] === b[0] && a[1] > b[1]);
+}
+function applyLiveCall(state, call) {
+  if (state.over) throw new Error('Auction already over');
+  const seat = state.turnSeat;
+  const legal = legalCalls(state);
+  if (call === 'P' && !legal.pass) throw new Error('Pass not legal');
+  if (call === 'X' && !legal.double) throw new Error('Double not legal');
+  if (call === 'XX' && !legal.redouble) throw new Error('Redouble not legal');
+  if (!['P', 'X', 'XX'].includes(call)) {
+    const level = parseInt(call[0], 10);
+    const strain = call[1];
+    if (!isBidHigher(level, strain, state.contract)) throw new Error('Bid too low');
+  }
+  const wasPartnerNonPass = state.liveCalls.length > 0 &&
+    state.liveCalls[state.liveCalls.length - 1].call !== 'P';
+  const newLiveCalls = state.liveCalls.concat([{ seat, call }]);
+  const newFull = state.full.concat([{ seat, call, isOpp: false, implicit: false }]);
+  let ptr = state.ptr + 1;
+  const order = state.order;
+  const oppSeat = order[ptr % 4];
+  newFull.push({ seat: oppSeat, call: 'P', isOpp: true, implicit: true });
+  ptr += 1;
+  const nextTurnSeat = order[ptr % 4];
+  const r = replay(state.dealer, newFull);
+  const over = r.passStreak >= 3;
+  return {
+    ...state, full: newFull, liveCalls: newLiveCalls, turnSeat: nextTurnSeat, ptr,
+    contract: { level: r.level, strain: r.strain, side: r.side, doubled: r.doubled },
+    passStreak: r.passStreak, over,
+    endedByPartnerPass: call === 'P' && wasPartnerNonPass && over,
+  };
+}
+function formatContract(contract) {
+  if (contract.level === null) return 'Passed out';
+  const dbl = contract.doubled === 'X' ? ' X' : contract.doubled === 'XX' ? ' XX' : '';
+  return `${contract.level}${STRAIN_SYMBOL[contract.strain]}${dbl} by ${contract.side === 'us' ? 'us' : 'opponents'}`;
+}
+
+
+// ============ app ============
+const viewEl = document.getElementById('view');
+const sessionMetaEl = document.getElementById('sessionMeta');
+const toastEl = document.getElementById('toast');
+const STORAGE_KEY = 'bridgePracticeSession';
+const POLL_MS = 2000;
+
+let pollTimer = null;
+let lastSeenJson = null;
+
+function toast(msg, ms = 3200) {
+  toastEl.textContent = msg;
+  toastEl.classList.remove('hidden');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => toastEl.classList.add('hidden'), ms);
+}
+function genCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s = '';
+  for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
+}
+function saveLocal(code, name) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ code, name }));
+}
+function loadLocal() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; }
+}
+function clearLocal() { localStorage.removeItem(STORAGE_KEY); }
+
+function getHand(setId, num) {
+  const set = HANDS_DATA.sets.find((s) => slugify(s.name) === setId);
+  return set ? set.hands.find((h) => h.num === num) : null;
+}
+function slugify(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+// ---------- boot ----------
+const saved = loadLocal();
+if (saved) {
+  enterGame(saved.code, saved.name);
+} else {
+  renderLanding();
+}
+
+// ---------- landing ----------
+function renderLanding() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  sessionMetaEl.classList.add('hidden');
+  viewEl.innerHTML = `
+    <div class="landing">
+      <p class="tagline">Bidding practice for partnerships. Two seats, one auction, no peeking.</p>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="start">Start a session</button>
+        <button class="tab-btn" data-tab="join">Join a session</button>
+      </div>
+
+      <section id="startPane" class="pane">
+        <label>Your name<input id="hostName" type="text" maxlength="30" placeholder="e.g. Alice"></label>
+        <label>Partner's name<input id="partnerName" type="text" maxlength="30" placeholder="e.g. Bob"></label>
+        <label>Set to practice
+          <select id="setSelect">${HANDS_DATA.sets.map((s) => `<option value="${slugify(s.name)}">${s.name} (${s.hands.length} hands)</option>`).join('')}</select>
+        </label>
+        <button id="createBtn" class="primary">Create session</button>
+      </section>
+
+      <section id="joinPane" class="pane hidden">
+        <label>Session code<input id="joinCode" type="text" maxlength="6" style="text-transform:uppercase" placeholder="e.g. K7QX2M"></label>
+        <label>Your name<input id="joinName" type="text" maxlength="30" placeholder="the name your partner entered for you"></label>
+        <button id="joinBtn" class="primary">Join session</button>
+      </section>
+    </div>
+  `;
+
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const which = btn.dataset.tab;
+      document.getElementById('startPane').classList.toggle('hidden', which !== 'start');
+      document.getElementById('joinPane').classList.toggle('hidden', which !== 'join');
+    });
+  });
+
+  document.getElementById('createBtn').addEventListener('click', async () => {
+    const hostName = document.getElementById('hostName').value.trim();
+    const partnerName = document.getElementById('partnerName').value.trim();
+    const setId = document.getElementById('setSelect').value;
+    if (!hostName || !partnerName) return toast('Enter both names.');
+    if (hostName.toLowerCase() === partnerName.toLowerCase()) return toast('Names must be different.');
+    const set = HANDS_DATA.sets.find((s) => slugify(s.name) === setId);
+    if (!set) return toast('Choose a set.');
+
+    let code = genCode();
+    for (let i = 0; i < 5; i++) {
+      const existing = await dbGet(`bidding_practice/${code}`).catch(() => null);
+      if (!existing) break;
+      code = genCode();
+    }
+    await dbPut(`bidding_practice/${code}`, {
+      hostName, partnerName,
+      setId, setName: set.name,
+      handNums: set.hands.map((h) => h.num),
+      currentPos: 0,
+      createdAt: Date.now(),
+      hands: {},
+    });
+    saveLocal(code, hostName);
+    enterGame(code, hostName);
+  });
+
+  document.getElementById('joinBtn').addEventListener('click', async () => {
+    const code = document.getElementById('joinCode').value.trim().toUpperCase();
+    const name = document.getElementById('joinName').value.trim();
+    if (!code || !name) return toast('Enter the session code and your name.');
+    const session = await dbGet(`bidding_practice/${code}`).catch(() => null);
+    if (!session) return toast('No session found with that code.');
+    if (name.toLowerCase() !== session.hostName.toLowerCase() && name.toLowerCase() !== session.partnerName.toLowerCase()) {
+      return toast("That name wasn't used to start this session.");
+    }
+    saveLocal(code, name);
+    enterGame(code, name);
+  });
+}
+
+// ---------- game (polling-based sync) ----------
+function enterGame(code, myName) {
+  sessionMetaEl.classList.remove('hidden');
+  sessionMetaEl.innerHTML = `<span class="code-pill">${code}</span> <button id="leaveBtn" class="link-btn">Leave session</button>`;
+  document.getElementById('leaveBtn').addEventListener('click', () => {
+    clearLocal();
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    renderLanding();
+  });
+
+  lastSeenJson = null;
+  const tick = async () => {
+    const session = await dbGet(`bidding_practice/${code}`).catch(() => null);
+    if (!session) {
+      toast('Session no longer exists.');
+      clearLocal();
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+      return renderLanding();
+    }
+    const json = JSON.stringify(session);
+    if (json === lastSeenJson) return; // nothing changed, skip re-render
+    lastSeenJson = json;
+    renderHandForSession(code, session, myName);
+  };
+  tick();
+  pollTimer = setInterval(tick, POLL_MS);
+}
+
+function renderHandForSession(code, session, myName) {
+  const { handNums, currentPos, setId, setName, hostName, partnerName } = session;
+
+  if (currentPos >= handNums.length) {
+    viewEl.innerHTML = `
+      <div class="complete">
+        <h1>Set complete</h1>
+        <p>You and ${myName === hostName ? partnerName : hostName} finished every hand in "${setName}".</p>
+        <button id="backBtn" class="primary">Back to start</button>
+      </div>`;
+    document.getElementById('backBtn').addEventListener('click', () => {
+      clearLocal();
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+      renderLanding();
+    });
+    return;
+  }
+
+  const hostSeat = currentPos % 2 === 0 ? 'S' : 'N';
+  const mySeat = myName.toLowerCase() === hostName.toLowerCase() ? hostSeat : (hostSeat === 'S' ? 'N' : 'S');
+  const otherName = myName.toLowerCase() === hostName.toLowerCase() ? partnerName : hostName;
+  const sName = hostSeat === 'S' ? hostName : partnerName;
+  const nName = hostSeat === 'N' ? hostName : partnerName;
+
+  const num = handNums[currentPos];
+  const hand = getHand(setId, num);
+  const hs = (session.hands && session.hands[currentPos]) || { liveCalls: [], revealed: false };
+
+  const state = computeAuction(hand, hs.liveCalls || []);
+  const isMyTurn = !state.over && state.turnSeat === mySeat;
+
+  if (state.over && !hs.revealed) {
+    dbPut(`bidding_practice/${code}/hands/${currentPos}/revealed`, true).catch(() => {});
+  }
+
+  const myHand = mySeat === 'S' ? hand.sHand : hand.nHand;
+  const otherSeat = mySeat === 'S' ? 'N' : 'S';
+
+  viewEl.innerHTML = `
+    <div class="game">
+      <div class="hand-header">
+        <div><span class="set-label">${setName}</span> &middot; hand ${currentPos + 1} of ${handNums.length}</div>
+        <div class="seat-badge">You are <strong>${mySeat === 'S' ? 'South' : 'North'}</strong></div>
+      </div>
+
+      <div class="table-layout">
+        <div class="hand-panel mine">
+          <h2>Your hand</h2>
+          ${renderHandSuits(myHand)}
+        </div>
+
+        <div class="auction-panel">
+          <table class="auction-table">
+            <thead><tr><th>N</th><th>E</th><th>S</th><th>W</th></tr></thead>
+            <tbody>${renderAuctionRows(state.full)}</tbody>
+          </table>
+          ${state.over
+            ? `<div class="contract-line">${formatContract(state.contract)}</div>`
+            : isMyTurn
+              ? `<div class="turn-line mine">Your bid</div>`
+              : `<div class="turn-line">Waiting for ${otherName}&hellip;</div>`
+          }
+        </div>
+
+        <div class="hand-panel other ${state.over ? '' : 'blurred'}">
+          <h2>${otherSeat === 'S' ? sName : nName}'s hand</h2>
+          ${state.over ? renderHandSuits(otherSeat === 'S' ? hand.sHand : hand.nHand) : `<div class="locked">Revealed once the auction ends</div>`}
+        </div>
+      </div>
+
+      ${isMyTurn ? renderBidBox(state) : ''}
+      ${state.over ? renderReveal(hand) : ''}
+    </div>
+  `;
+
+  if (isMyTurn) wireBidBox(code, currentPos, hs, state);
+  if (state.over) wireReveal(code, currentPos);
+}
+
+function computeAuction(hand, liveCalls) {
+  let state = initAuctionState(hand);
+  for (const c of liveCalls) state = applyLiveCall(state, c.call);
+  return state;
+}
+
+function renderHandSuits(h) {
+  return `
+    <div class="suit-row"><i class="s">&spades;</i>${h.S || '&mdash;'}</div>
+    <div class="suit-row"><i class="h">&hearts;</i>${h.H || '&mdash;'}</div>
+    <div class="suit-row"><i class="d">&diams;</i>${h.D || '&mdash;'}</div>
+    <div class="suit-row"><i class="c">&clubs;</i>${h.C || '&mdash;'}</div>
+  `;
+}
+
+function renderAuctionRows(full) {
+  const seatCol = { N: 0, E: 1, S: 2, W: 3 };
+  const rows = [];
+  let row = [null, null, null, null];
+  let started = false;
+  for (const call of full) {
+    const col = seatCol[call.seat];
+    if (!started) {
+      for (let c = 0; c < col; c++) row[c] = '';
+      started = true;
+    }
+    row[col] = formatCallHtml(call.call);
+    if (col === 3) { rows.push(row); row = [null, null, null, null]; }
+  }
+  if (row.some((c) => c !== null)) {
+    for (let c = 0; c < 4; c++) if (row[c] === null) row[c] = '';
+    rows.push(row);
+  }
+  return rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('');
+}
+
+function formatCallHtml(call) {
+  if (call === 'P') return '<span class="call pass">Pass</span>';
+  if (call === 'X') return '<span class="call dbl">X</span>';
+  if (call === 'XX') return '<span class="call dbl">XX</span>';
+  const strain = call[1];
+  const cls = strain === 'H' || strain === 'D' ? 'red' : 'black';
+  return `<span class="call ${cls}">${call[0]}${STRAIN_SYMBOL[strain]}</span>`;
+}
+
+function renderBidBox(state) {
+  const legal = legalCalls(state);
+  const strains = ['C', 'D', 'H', 'S', 'N'];
+  let grid = '';
+  for (let level = 1; level <= 7; level++) {
+    grid += `<div class="bid-row">`;
+    for (const st of strains) {
+      const call = `${level}${st}`;
+      const disabled = !isCallLegal(call, state) ? 'disabled' : '';
+      const cls = st === 'H' || st === 'D' ? 'red' : 'black';
+      grid += `<button class="bid-btn ${cls}" data-call="${call}" ${disabled}>${level}${STRAIN_SYMBOL[st]}</button>`;
+    }
+    grid += `</div>`;
+  }
+  return `
+    <div class="bid-box">
+      <div class="bid-grid">${grid}</div>
+      <div class="bid-actions">
+        <button class="action-btn pass" data-call="P">Pass</button>
+        <button class="action-btn dbl" data-call="X" ${legal.double ? '' : 'disabled'}>Double</button>
+        <button class="action-btn dbl" data-call="XX" ${legal.redouble ? '' : 'disabled'}>Redouble</button>
+      </div>
+    </div>
+  `;
+}
+
+function isCallLegal(call, state) {
+  const c = state.contract;
+  if (c.level === null) return true;
+  const rank = { C: 0, D: 1, H: 2, S: 3, N: 4 };
+  const level = parseInt(call[0], 10), strain = call[1];
+  return level > c.level || (level === c.level && rank[strain] > rank[c.strain]);
+}
+
+function wireBidBox(code, pos, hs, state) {
+  document.querySelectorAll('.bid-btn:not([disabled]), .action-btn:not([disabled])').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const call = btn.dataset.call;
+      document.querySelectorAll('.bid-btn, .action-btn').forEach((b) => b.disabled = true);
+      try {
+        // re-fetch immediately before writing to avoid clobbering a
+        // concurrent call (best-effort - not a true transaction, but
+        // fine for two players alternating strict turns)
+        const fresh = await dbGet(`bidding_practice/${code}/hands/${pos}`).catch(() => null);
+        const currentLive = (fresh && fresh.liveCalls) || [];
+        if (currentLive.length !== (hs.liveCalls || []).length) {
+          lastSeenJson = null; // force next poll to re-render with the real state
+          return;
+        }
+        const sName = hs.sName, nName = hs.nName;
+        await dbPut(`bidding_practice/${code}/hands/${pos}`, {
+          sName, nName,
+          liveCalls: [...currentLive, { seat: state.turnSeat, call }],
+          revealed: false,
+        });
+        lastSeenJson = null; // force immediate re-render on next tick
+      } catch (e) {
+        toast('Could not submit that call - try again.');
+      }
+    });
+  });
+}
+
+function renderReveal(hand) {
+  return `
+    <div class="reveal">
+      <div class="reveal-hands">
+        <div class="hand-panel"><h2>South</h2>${renderHandSuits(hand.sHand)}</div>
+        <div class="hand-panel"><h2>North</h2>${renderHandSuits(hand.nHand)}</div>
+      </div>
+      ${hand.suggested ? `<div class="suggested"><h3>Suggested sequence</h3><p>${escapeHtml(hand.suggested)}</p></div>` : ''}
+      ${hand.notes ? `<div class="notes"><h3>Notes</h3><p>${escapeHtml(hand.notes)}</p></div>` : ''}
+      <button id="nextHandBtn" class="primary">Next hand</button>
+    </div>
+  `;
+}
+
+function wireReveal(code, currentPos) {
+  const btn = document.getElementById('nextHandBtn');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    try {
+      const fresh = await dbGet(`bidding_practice/${code}`).catch(() => null);
+      if (!fresh || fresh.currentPos !== currentPos) { lastSeenJson = null; return; }
+      await dbPut(`bidding_practice/${code}/currentPos`, currentPos + 1);
+      lastSeenJson = null;
+    } catch (e) {
+      toast('Could not advance - try again.');
+      btn.disabled = false;
+    }
+  });
+}
+
+function escapeHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+</script>
 </body>
 </html>
