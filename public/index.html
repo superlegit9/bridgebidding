@@ -228,8 +228,19 @@ button.primary:hover { background: var(--brass-bright); }
   text-align: center; margin-top: 12px; font-family: var(--font-display);
   font-size: 1.05rem; color: var(--brass-bright);
 }
-.undo-btn { display: block; margin: 10px auto 0; font-size: 0.8rem; }
-.next-turn-btn { display: block; margin-bottom: 10px; font-size: 0.85rem; }
+.undo-btn {
+  display: block; margin: 12px auto 0; padding: 8px 16px;
+  background: rgba(255,255,255,0.06); border: 1px solid var(--line); border-radius: 6px;
+  color: var(--cream-dim); font-weight: 600; font-size: 0.85rem; text-decoration: none; cursor: pointer;
+}
+.undo-btn:hover { background: rgba(255,255,255,0.14); color: var(--cream); border-color: var(--brass); }
+.next-turn-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--brass); color: var(--felt-dark); border: none; border-radius: 7px;
+  padding: 11px 18px; font-weight: 700; font-size: 0.95rem; text-decoration: none; cursor: pointer;
+  margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.next-turn-btn:hover { background: var(--brass-bright); color: var(--felt-dark); }
 
 /* ---------- bid box ---------- */
 .bid-box { background: rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
@@ -568,16 +579,7 @@ function enterGame(code, myName, setId) {
     lastSeenJson = json;
     lastSession = session;
     if (viewPos === null) viewPos = firstUnfinishedPos(session);
-    try {
-      renderGameUI(code, myName);
-    } catch (e) {
-      console.error('Render failed, returning to start:', e);
-      toast('Something went wrong resuming that session - please rejoin.');
-      clearLocal();
-      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
-      lastSession = null; viewPos = null;
-      renderLanding();
-    }
+    renderGameUI(code, myName);
   };
   tick();
   pollTimer = setInterval(tick, POLL_MS);
@@ -609,6 +611,19 @@ function renderTracker(session, myName) {
 }
 
 function renderGameUI(code, myName) {
+  try {
+    renderGameUIUnsafe(code, myName);
+  } catch (e) {
+    console.error('Render failed, returning to start:', e);
+    toast('Something went wrong showing that hand - please rejoin.');
+    clearLocal();
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    lastSession = null; viewPos = null;
+    renderLanding();
+  }
+}
+
+function renderGameUIUnsafe(code, myName) {
   const session = lastSession;
   const { handNums, setId, setName, hostName, partnerName } = session;
   const pos = viewPos;
@@ -644,7 +659,7 @@ function renderGameUI(code, myName) {
         <div class="seat-badge">You are <strong>${mySeat === 'S' ? 'South' : 'North'}</strong></div>
       </div>
 
-      ${nextTurnPos !== null ? `<button id="nextTurnBtn" class="link-btn next-turn-btn">Next hand where it's your turn (${nextTurnPos + 1}) &rarr;</button>` : ''}
+      ${nextTurnPos !== null ? `<button id="nextTurnBtn" class="next-turn-btn">Next hand where it's your turn (${nextTurnPos + 1}) &rarr;</button>` : ''}
 
       ${renderTracker(session, myName)}
 
@@ -666,7 +681,7 @@ function renderGameUI(code, myName) {
                 ? `<div class="turn-line mine">Your bid</div>`
                 : `<div class="turn-line">Waiting for ${otherName}&hellip;</div>`
             }
-            ${(hs.liveCalls || []).length > 0 ? `<button id="undoBtn" class="link-btn undo-btn">Undo last call</button>` : ''}
+            ${(hs.liveCalls || []).length > 0 ? `<button id="undoBtn" class="undo-btn">Undo last call</button>` : ''}
           </div>
 
           <div class="hand-panel ${mySeat === 'S' ? 'mine' : 'other'} ${southVisible ? '' : 'blurred'}">
