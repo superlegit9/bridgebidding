@@ -147,6 +147,12 @@ button.primary:hover { background: var(--brass-bright); }
 .tracker-chip.active { background: rgba(198,154,58,0.35); color: var(--brass-bright); border-color: var(--brass); }
 .tracker-chip.done { background: var(--brass); color: var(--felt-dark); font-weight: 700; }
 .tracker-chip.current { outline: 2px solid var(--cream); outline-offset: 1px; }
+.tracker-chip.my-turn { position: relative; }
+.tracker-chip.my-turn::after {
+  content: ''; position: absolute; top: -3px; right: -3px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #e0453f; border: 1.5px solid var(--felt);
+}
 
 .hand-header {
   display: flex; justify-content: space-between; align-items: baseline;
@@ -410,6 +416,7 @@ const viewEl = document.getElementById('view');
 const sessionMetaEl = document.getElementById('sessionMeta');
 const toastEl = document.getElementById('toast');
 const STORAGE_KEY = 'bridgePracticeSession';
+const STORAGE_VERSION = 2; // bump whenever the saved-session shape changes
 const POLL_MS = 2000;
 
 let pollTimer = null;
@@ -422,10 +429,14 @@ function toast(msg, ms = 3200) {
   toast._t = setTimeout(() => toastEl.classList.add('hidden'), ms);
 }
 function saveLocal(code, name, setId) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ code, name, setId }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ v: STORAGE_VERSION, code, name, setId }));
 }
 function loadLocal() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; }
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (!saved || saved.v !== STORAGE_VERSION || !saved.code || !saved.name || !saved.setId) return null;
+    return saved;
+  } catch { return null; }
 }
 function clearLocal() { localStorage.removeItem(STORAGE_KEY); }
 
@@ -555,15 +566,34 @@ function enterGame(code, myName, setId) {
     lastSeenJson = json;
     lastSession = session;
     if (viewPos === null) viewPos = firstUnfinishedPos(session);
-    renderGameUI(code, myName);
+    try {
+      renderGameUI(code, myName);
+    } catch (e) {
+      console.error('Render failed, returning to start:', e);
+      toast('Something went wrong resuming that session - please rejoin.');
+      clearLocal();
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+      lastSession = null; viewPos = null;
+      renderLanding();
+    }
   };
   tick();
   pollTimer = setInterval(tick, POLL_MS);
 }
 
-function renderTracker(session) {
+function isMyTurnAt(session, pos, myName) {
+  const hostSeat = pos % 2 === 0 ? 'S' : 'N';
+  const mySeat = myName.toLowerCase() === session.hostName.toLowerCase() ? hostSeat : (hostSeat === 'S' ? 'N' : 'S');
+  const num = session.handNums[pos];
+  const hand = getHand(session.setId, num);
+  const hs = (session.hands && session.hands[pos]) || { liveCalls: [] };
+  const state = computeAuction(hand, hs.liveCalls || []);
+  return !state.over && state.turnSeat === mySeat;
+}
+
+function renderTracker(session, myName) {
   return `<div class="tracker">${session.handNums.map((num, i) =>
-    `<button class="tracker-chip ${statusOf(session, i)} ${i === viewPos ? 'current' : ''}" data-pos="${i}" title="Hand ${i + 1}">${i + 1}</button>`
+    `<button class="tracker-chip ${statusOf(session, i)} ${i === viewPos ? 'current' : ''} ${isMyTurnAt(session, i, myName) ? 'my-turn' : ''}" data-pos="${i}" title="Hand ${i + 1}">${i + 1}</button>`
   ).join('')}</div>`;
 }
 
@@ -602,7 +632,7 @@ function renderGameUI(code, myName) {
         <div class="seat-badge">You are <strong>${mySeat === 'S' ? 'South' : 'North'}</strong></div>
       </div>
 
-      ${renderTracker(session)}
+      ${renderTracker(session, myName)}
 
       <div class="table-layout">
         <div class="left-col">
