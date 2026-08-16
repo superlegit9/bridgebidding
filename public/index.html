@@ -97,6 +97,21 @@ main#view { flex: 1; display: flex; justify-content: center; padding: 32px 20px 
   cursor: pointer; border-radius: 6px; font-family: var(--font-body); font-weight: 600; font-size: 0.92rem;
 }
 .tab-btn.active { background: var(--brass); color: var(--felt-dark); }
+
+/* ---------- admin ---------- */
+.admin-view { max-width: 760px; }
+.admin-view h2 { font-family: var(--font-display); color: var(--brass-bright); }
+.admin-pair {
+  background: rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 16px; margin-bottom: 16px;
+}
+.admin-pair-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.admin-set { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
+.admin-set-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
+.admin-detail-table { width: 100%; margin-top: 8px; font-family: var(--font-mono); font-size: 0.82rem; border-collapse: collapse; }
+.admin-detail-table th, .admin-detail-table td { text-align: left; padding: 3px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.admin-del-set, .admin-del-pair { color: #d98f8f; font-size: 0.82rem; }
+.admin-del-set:hover, .admin-del-pair:hover { color: #ffb3b3; }
 .pane { display: flex; flex-direction: column; gap: 14px; }
 .pane.hidden { display: none; }
 .pane label { display: flex; flex-direction: column; gap: 6px; font-size: 0.88rem; color: var(--cream-dim); }
@@ -324,6 +339,11 @@ async function dbPut(path, value) {
   if (!res.ok) throw new Error(`DB write failed (${res.status})`);
   return res.json();
 }
+async function dbDelete(path) {
+  const res = await fetch(`${DB_ROOT}/${path}.json`, { method: 'DELETE' });
+  if (!res.ok) throw new Error(`DB delete failed (${res.status})`);
+  return res.json();
+}
 
 // ============ bidding auction engine ============
 const STRAIN_RANK = { C: 0, D: 1, H: 2, S: 3, N: 4 };
@@ -436,6 +456,7 @@ let pollTimer = null;
 let lastSeenJson = null;
 let lastSession = null;
 let viewPos = null; // local only - which hand THIS tab is currently looking at
+const ADMIN_PASSPHRASE = 'STUpid123!!!'; // deterrent only, not real security - same trust model as the rest of the app
 
 function toast(msg, ms = 3200) {
   toastEl.textContent = msg;
@@ -468,11 +489,94 @@ function pairKey(nameA, nameB) {
 }
 
 // ---------- boot ----------
-const saved = loadLocal();
-if (saved) {
-  enterGame(saved.code, saved.name, saved.setId);
+if (new URLSearchParams(location.search).get('admin') === '1') {
+  renderAdminScreen();
 } else {
-  renderLanding();
+  const saved = loadLocal();
+  if (saved) {
+    enterGame(saved.code, saved.name, saved.setId);
+  } else {
+    renderLanding();
+  }
+}
+
+// ---------- admin (visit ?admin=1) ----------
+
+async function renderAdminScreen() {
+  const entered = prompt('Admin passphrase:');
+  if (entered !== ADMIN_PASSPHRASE) {
+    alert('Wrong passphrase.');
+    return renderLanding();
+  }
+  sessionMetaEl.classList.add('hidden');
+  viewEl.innerHTML = `<div class="landing admin-view"><p class="muted">Loading all sessions&hellip;</p></div>`;
+
+  const all = await dbGet('bidding_practice').catch(() => null);
+  viewEl.innerHTML = `<div class="landing admin-view"><h2>All sessions</h2><div id="adminBody"></div></div>`;
+  renderAdminBody(all);
+}
+
+function renderAdminBody(all) {
+  const body = document.getElementById('adminBody');
+  if (!all || Object.keys(all).length === 0) {
+    body.innerHTML = `<p class="muted">No sessions yet.</p>`;
+    return;
+  }
+
+  const pairsHtml = Object.entries(all).map(([pairId, pair]) => {
+    const sets = pair.sets || {};
+    const setsHtml = Object.entries(sets).map(([setId, setState]) => {
+      const handNums = setState.handNums || [];
+      const total = handNums.length;
+      const handsObj = setState.hands || {};
+      const done = Object.values(handsObj).filter((h) => h && h.revealed).length;
+      const pct = total ? Math.round((100 * done) / total) : 0;
+      const detailRows = handNums.map((num, i) => {
+        const hs = handsObj[i] || {};
+        const calls = (hs.liveCalls || []).map((c) => `${c.seat}:${c.call}`).join(' ');
+        const status = hs.revealed ? 'done' : calls ? 'active' : 'new';
+        return `<tr><td>${i + 1}</td><td>${status}</td><td>${calls ? escapeHtml(calls) : '&mdash;'}</td></tr>`;
+      }).join('');
+      return `
+        <div class="admin-set">
+          <div class="admin-set-header">
+            <span><strong>${escapeHtml(setState.setName || setId)}</strong> &mdash; ${done}/${total} hands (${pct}%)</span>
+            <button class="link-btn admin-del-set" data-pair="${pairId}" data-set="${setId}">Delete this set's progress</button>
+          </div>
+          <details><summary>View bidding sequences</summary>
+            <table class="admin-detail-table"><thead><tr><th>#</th><th>Status</th><th>Calls</th></tr></thead><tbody>${detailRows}</tbody></table>
+          </details>
+        </div>`;
+    }).join('') || `<p class="muted">No sets started yet.</p>`;
+
+    return `
+      <div class="admin-pair">
+        <div class="admin-pair-header">
+          <strong>${escapeHtml(pair.hostName || '?')} &amp; ${escapeHtml(pair.partnerName || '?')}</strong>
+          <button class="link-btn admin-del-pair" data-pair="${pairId}">Delete entire session</button>
+        </div>
+        ${setsHtml}
+      </div>`;
+  }).join('');
+
+  body.innerHTML = pairsHtml;
+
+  body.querySelectorAll('.admin-del-set').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!confirm("Delete this set's progress for this pair? This cannot be undone.")) return;
+      await dbDelete(`bidding_practice/${btn.dataset.pair}/sets/${btn.dataset.set}`).catch(() => toast('Delete failed.'));
+      const fresh = await dbGet('bidding_practice').catch(() => null);
+      renderAdminBody(fresh);
+    });
+  });
+  body.querySelectorAll('.admin-del-pair').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Delete this ENTIRE session (all sets, both players) for this pair? This cannot be undone.')) return;
+      await dbDelete(`bidding_practice/${btn.dataset.pair}`).catch(() => toast('Delete failed.'));
+      const fresh = await dbGet('bidding_practice').catch(() => null);
+      renderAdminBody(fresh);
+    });
+  });
 }
 
 // ---------- landing ----------
