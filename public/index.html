@@ -228,6 +228,8 @@ button.primary:hover { background: var(--brass-bright); }
   text-align: center; margin-top: 12px; font-family: var(--font-display);
   font-size: 1.05rem; color: var(--brass-bright);
 }
+.undo-btn { display: block; margin: 10px auto 0; font-size: 0.8rem; }
+.next-turn-btn { display: block; margin-bottom: 10px; font-size: 0.85rem; }
 
 /* ---------- bid box ---------- */
 .bid-box { background: rgba(0,0,0,0.18); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
@@ -591,6 +593,15 @@ function isMyTurnAt(session, pos, myName) {
   return !state.over && state.turnSeat === mySeat;
 }
 
+function findNextMyTurn(session, myName, fromPos) {
+  const n = session.handNums.length;
+  for (let step = 1; step <= n; step++) {
+    const i = (fromPos + step) % n;
+    if (isMyTurnAt(session, i, myName)) return i;
+  }
+  return null;
+}
+
 function renderTracker(session, myName) {
   return `<div class="tracker">${session.handNums.map((num, i) =>
     `<button class="tracker-chip ${statusOf(session, i)} ${i === viewPos ? 'current' : ''} ${isMyTurnAt(session, i, myName) ? 'my-turn' : ''}" data-pos="${i}" title="Hand ${i + 1}">${i + 1}</button>`
@@ -624,6 +635,7 @@ function renderGameUI(code, myName) {
   const southVisible = mySeat === 'S' || state.over;
   const northLabel = mySeat === 'N' ? `${nName} (you)` : nName;
   const southLabel = mySeat === 'S' ? `${sName} (you)` : sName;
+  const nextTurnPos = findNextMyTurn(session, myName, pos);
 
   viewEl.innerHTML = `
     <div class="game">
@@ -631,6 +643,8 @@ function renderGameUI(code, myName) {
         <div><span class="set-label">${setName}</span> &middot; hand ${pos + 1} of ${handNums.length}${allDone ? ' <span class="done-badge">all done</span>' : ''}</div>
         <div class="seat-badge">You are <strong>${mySeat === 'S' ? 'South' : 'North'}</strong></div>
       </div>
+
+      ${nextTurnPos !== null ? `<button id="nextTurnBtn" class="link-btn next-turn-btn">Next hand where it's your turn (${nextTurnPos + 1}) &rarr;</button>` : ''}
 
       ${renderTracker(session, myName)}
 
@@ -652,6 +666,7 @@ function renderGameUI(code, myName) {
                 ? `<div class="turn-line mine">Your bid</div>`
                 : `<div class="turn-line">Waiting for ${otherName}&hellip;</div>`
             }
+            ${(hs.liveCalls || []).length > 0 ? `<button id="undoBtn" class="link-btn undo-btn">Undo last call</button>` : ''}
           </div>
 
           <div class="hand-panel ${mySeat === 'S' ? 'mine' : 'other'} ${southVisible ? '' : 'blurred'}">
@@ -679,7 +694,35 @@ function renderGameUI(code, myName) {
     });
   });
 
-  if (isMyTurn) wireBidBox(code, setId, pos, sName, nName, hs, state);
+  const nextTurnBtn = document.getElementById('nextTurnBtn');
+  if (nextTurnBtn) {
+    nextTurnBtn.addEventListener('click', () => {
+      if (nextTurnPos !== null) {
+        viewPos = nextTurnPos;
+        renderGameUI(code, myName);
+      }
+    });
+  }
+
+  const undoBtn = document.getElementById('undoBtn');
+  if (undoBtn) {
+    undoBtn.addEventListener('click', async () => {
+      undoBtn.disabled = true;
+      try {
+        const fresh = await dbGet(`bidding_practice/${code}/sets/${setId}/hands/${pos}`).catch(() => null);
+        const currentLive = (fresh && fresh.liveCalls) || [];
+        if (currentLive.length === 0) return;
+        const newHandState = { sName, nName, liveCalls: currentLive.slice(0, -1), revealed: false };
+        await dbPut(`bidding_practice/${code}/sets/${setId}/hands/${pos}`, newHandState);
+        applyLocalHandUpdate(code, myName, pos, newHandState);
+      } catch (e) {
+        toast('Could not undo - try again.');
+        undoBtn.disabled = false;
+      }
+    });
+  }
+
+  if (isMyTurn) wireBidBox(code, myName, setId, pos, sName, nName, hs, state);
   if (state.over) wireReveal(code, myName, session);
 }
 
@@ -687,6 +730,16 @@ function computeAuction(hand, liveCalls) {
   let state = initAuctionState(hand);
   for (const c of liveCalls) state = applyLiveCall(state, c.call);
   return state;
+}
+
+// Applies a hand-state write we just made ourselves directly to the local
+// cached session and re-renders immediately, instead of waiting for the
+// next poll tick to notice it.
+function applyLocalHandUpdate(code, myName, pos, newHandState) {
+  if (!lastSession) return;
+  lastSession = { ...lastSession, hands: { ...lastSession.hands, [pos]: newHandState } };
+  lastSeenJson = JSON.stringify(lastSession);
+  renderGameUI(code, myName);
 }
 
 function renderHandSuits(h) {
@@ -762,7 +815,7 @@ function isCallLegal(call, state) {
   return level > c.level || (level === c.level && rank[strain] > rank[c.strain]);
 }
 
-function wireBidBox(code, setId, pos, sName, nName, hs, state) {
+function wireBidBox(code, myName, setId, pos, sName, nName, hs, state) {
   document.querySelectorAll('.bid-btn:not([disabled]), .action-btn:not([disabled])').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const call = btn.dataset.call;
@@ -777,12 +830,9 @@ function wireBidBox(code, setId, pos, sName, nName, hs, state) {
           lastSeenJson = null; // force next poll to re-render with the real state
           return;
         }
-        await dbPut(`bidding_practice/${code}/sets/${setId}/hands/${pos}`, {
-          sName, nName,
-          liveCalls: [...currentLive, { seat: state.turnSeat, call }],
-          revealed: false,
-        });
-        lastSeenJson = null; // force immediate re-render on next tick
+        const newHandState = { sName, nName, liveCalls: [...currentLive, { seat: state.turnSeat, call }], revealed: false };
+        await dbPut(`bidding_practice/${code}/sets/${setId}/hands/${pos}`, newHandState);
+        applyLocalHandUpdate(code, myName, pos, newHandState);
       } catch (e) {
         toast('Could not submit that call - try again.');
       }
