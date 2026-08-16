@@ -130,6 +130,24 @@ button.primary:hover { background: var(--brass-bright); }
 
 /* ---------- game ---------- */
 .game { width: 100%; max-width: 900px; }
+.done-badge {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--felt-dark); background: var(--brass-bright); padding: 2px 8px; border-radius: 999px;
+  vertical-align: middle; margin-left: 6px;
+}
+.tracker {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px;
+  padding: 10px; background: rgba(0,0,0,0.15); border: 1px solid var(--line); border-radius: 8px;
+}
+.tracker-chip {
+  width: 34px; height: 30px; border-radius: 5px; border: 1px solid var(--line);
+  background: rgba(255,255,255,0.06); color: var(--cream-dim);
+  font-family: var(--font-mono); font-size: 0.82rem; cursor: pointer;
+}
+.tracker-chip.active { background: rgba(198,154,58,0.35); color: var(--brass-bright); border-color: var(--brass); }
+.tracker-chip.done { background: var(--brass); color: var(--felt-dark); font-weight: 700; }
+.tracker-chip.current { outline: 2px solid var(--cream); outline-offset: 1px; }
+
 .hand-header {
   display: flex; justify-content: space-between; align-items: baseline;
   margin-bottom: 18px; font-size: 0.92rem; color: var(--cream-dim);
@@ -403,8 +421,8 @@ function toast(msg, ms = 3200) {
   clearTimeout(toast._t);
   toast._t = setTimeout(() => toastEl.classList.add('hidden'), ms);
 }
-function saveLocal(code, name) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ code, name }));
+function saveLocal(code, name, setId) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ code, name, setId }));
 }
 function loadLocal() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { return null; }
@@ -426,7 +444,7 @@ function pairKey(nameA, nameB) {
 // ---------- boot ----------
 const saved = loadLocal();
 if (saved) {
-  enterGame(saved.code, saved.name);
+  enterGame(saved.code, saved.name, saved.setId);
 } else {
   renderLanding();
 }
@@ -454,94 +472,124 @@ function renderLanding() {
     const setId = document.getElementById('setSelect').value;
     if (!myName || !partnerName) return toast('Enter both names.');
     if (myName.toLowerCase() === partnerName.toLowerCase()) return toast('Names must be different.');
-
     const set = HANDS_DATA.sets.find((s) => slugify(s.name) === setId);
     if (!set) return toast('Choose a set.');
 
-    const key = `${pairKey(myName, partnerName)}--${setId}`;
+    const key = pairKey(myName, partnerName);
     const existing = await dbGet(`bidding_practice/${key}`).catch(() => null);
 
-    if (existing) {
-      saveLocal(key, myName);
-      return enterGame(key, myName);
+    if (existing && existing.sets && existing.sets[setId]) {
+      // this pair already has progress on this exact set - resume it
+      saveLocal(key, myName, setId);
+      return enterGame(key, myName, setId);
     }
 
-    await dbPut(`bidding_practice/${key}`, {
-      hostName: myName, partnerName,
-      setId, setName: set.name,
+    const freshSetProgress = {
+      setName: set.name,
       handNums: set.hands.map((h) => h.num),
-      currentPos: 0,
-      createdAt: Date.now(),
       hands: {},
-    });
-    saveLocal(key, myName);
-    enterGame(key, myName);
+    };
+
+    if (existing) {
+      // pair exists, but this particular set is new to them - add it
+      // alongside whatever other sets' progress they already have
+      await dbPut(`bidding_practice/${key}/sets/${setId}`, freshSetProgress);
+    } else {
+      await dbPut(`bidding_practice/${key}`, {
+        hostName: myName, partnerName,
+        createdAt: Date.now(),
+        sets: { [setId]: freshSetProgress },
+      });
+    }
+    saveLocal(key, myName, setId);
+    enterGame(key, myName, setId);
   });
 }
 
-// ---------- game (polling-based sync) ----------
-function enterGame(code, myName) {
+// ---------- game (polling-based sync, free navigation via tracker) ----------
+let lastSession = null;
+let viewPos = null; // local only - which hand THIS tab is currently looking at
+
+function statusOf(session, pos) {
+  const hs = session.hands[pos];
+  if (hs && hs.revealed) return 'done';
+  if (hs && hs.liveCalls && hs.liveCalls.length) return 'active';
+  return 'new';
+}
+function firstUnfinishedPos(session) {
+  for (let i = 0; i < session.handNums.length; i++) {
+    if (statusOf(session, i) !== 'done') return i;
+  }
+  return session.handNums.length - 1;
+}
+
+function enterGame(code, myName, setId) {
   sessionMetaEl.classList.remove('hidden');
   sessionMetaEl.innerHTML = `<button id="leaveBtn" class="link-btn">Leave session</button>`;
   document.getElementById('leaveBtn').addEventListener('click', () => {
     clearLocal();
     if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    lastSession = null; viewPos = null;
     renderLanding();
   });
 
   lastSeenJson = null;
+  lastSession = null;
+  viewPos = null;
   const tick = async () => {
-    const session = await dbGet(`bidding_practice/${code}`).catch(() => null);
-    if (!session) {
+    const pair = await dbGet(`bidding_practice/${code}`).catch(() => null);
+    const setState = pair && pair.sets && pair.sets[setId];
+    if (!pair || !setState) {
       toast('Session no longer exists.');
       clearLocal();
       if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
       return renderLanding();
     }
+    const session = {
+      hostName: pair.hostName, partnerName: pair.partnerName,
+      handNums: setState.handNums, setId, setName: setState.setName,
+      hands: setState.hands || {},
+    };
     const json = JSON.stringify(session);
     if (json === lastSeenJson) return; // nothing changed, skip re-render
     lastSeenJson = json;
-    renderHandForSession(code, session, myName);
+    lastSession = session;
+    if (viewPos === null) viewPos = firstUnfinishedPos(session);
+    renderGameUI(code, myName);
   };
   tick();
   pollTimer = setInterval(tick, POLL_MS);
 }
 
-function renderHandForSession(code, session, myName) {
-  const { handNums, currentPos, setId, setName, hostName, partnerName } = session;
+function renderTracker(session) {
+  return `<div class="tracker">${session.handNums.map((num, i) =>
+    `<button class="tracker-chip ${statusOf(session, i)} ${i === viewPos ? 'current' : ''}" data-pos="${i}" title="Hand ${i + 1}">${i + 1}</button>`
+  ).join('')}</div>`;
+}
 
-  if (currentPos >= handNums.length) {
-    viewEl.innerHTML = `
-      <div class="complete">
-        <h1>Set complete</h1>
-        <p>You and ${myName === hostName ? partnerName : hostName} finished every hand in "${setName}".</p>
-        <button id="backBtn" class="primary">Back to start</button>
-      </div>`;
-    document.getElementById('backBtn').addEventListener('click', () => {
-      clearLocal();
-      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
-      renderLanding();
-    });
-    return;
-  }
+function renderGameUI(code, myName) {
+  const session = lastSession;
+  const { handNums, setId, setName, hostName, partnerName } = session;
+  const pos = viewPos;
 
-  const hostSeat = currentPos % 2 === 0 ? 'S' : 'N';
+  const hostSeat = pos % 2 === 0 ? 'S' : 'N';
   const mySeat = myName.toLowerCase() === hostName.toLowerCase() ? hostSeat : (hostSeat === 'S' ? 'N' : 'S');
   const otherName = myName.toLowerCase() === hostName.toLowerCase() ? partnerName : hostName;
   const sName = hostSeat === 'S' ? hostName : partnerName;
   const nName = hostSeat === 'N' ? hostName : partnerName;
 
-  const num = handNums[currentPos];
+  const num = handNums[pos];
   const hand = getHand(setId, num);
-  const hs = (session.hands && session.hands[currentPos]) || { liveCalls: [], revealed: false };
+  const hs = (session.hands && session.hands[pos]) || { liveCalls: [], revealed: false };
 
   const state = computeAuction(hand, hs.liveCalls || []);
   const isMyTurn = !state.over && state.turnSeat === mySeat;
 
   if (state.over && !hs.revealed) {
-    dbPut(`bidding_practice/${code}/hands/${currentPos}/revealed`, true).catch(() => {});
+    dbPut(`bidding_practice/${code}/sets/${setId}/hands/${pos}/revealed`, true).catch(() => {});
   }
 
+  const allDone = handNums.every((_, i) => statusOf(session, i) === 'done');
   const northVisible = mySeat === 'N' || state.over;
   const southVisible = mySeat === 'S' || state.over;
   const northLabel = mySeat === 'N' ? `${nName} (you)` : nName;
@@ -550,9 +598,11 @@ function renderHandForSession(code, session, myName) {
   viewEl.innerHTML = `
     <div class="game">
       <div class="hand-header">
-        <div><span class="set-label">${setName}</span> &middot; hand ${currentPos + 1} of ${handNums.length}</div>
+        <div><span class="set-label">${setName}</span> &middot; hand ${pos + 1} of ${handNums.length}${allDone ? ' <span class="done-badge">all done</span>' : ''}</div>
         <div class="seat-badge">You are <strong>${mySeat === 'S' ? 'South' : 'North'}</strong></div>
       </div>
+
+      ${renderTracker(session)}
 
       <div class="table-layout">
         <div class="left-col">
@@ -582,7 +632,7 @@ function renderHandForSession(code, session, myName) {
 
         <div class="right-col">
           ${state.over
-            ? renderReveal(hand)
+            ? renderReveal(hand, session, pos)
             : isMyTurn
               ? renderBidBox(state)
               : `<p class="muted waiting-note">Waiting for ${otherName} to bid.</p>`
@@ -592,8 +642,15 @@ function renderHandForSession(code, session, myName) {
     </div>
   `;
 
-  if (isMyTurn) wireBidBox(code, currentPos, hs, state);
-  if (state.over) wireReveal(code, currentPos);
+  document.querySelectorAll('.tracker-chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      viewPos = parseInt(chip.dataset.pos, 10);
+      renderGameUI(code, myName);
+    });
+  });
+
+  if (isMyTurn) wireBidBox(code, setId, pos, sName, nName, hs, state);
+  if (state.over) wireReveal(code, myName, session);
 }
 
 function computeAuction(hand, liveCalls) {
@@ -675,7 +732,7 @@ function isCallLegal(call, state) {
   return level > c.level || (level === c.level && rank[strain] > rank[c.strain]);
 }
 
-function wireBidBox(code, pos, hs, state) {
+function wireBidBox(code, setId, pos, sName, nName, hs, state) {
   document.querySelectorAll('.bid-btn:not([disabled]), .action-btn:not([disabled])').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const call = btn.dataset.call;
@@ -684,14 +741,13 @@ function wireBidBox(code, pos, hs, state) {
         // re-fetch immediately before writing to avoid clobbering a
         // concurrent call (best-effort - not a true transaction, but
         // fine for two players alternating strict turns)
-        const fresh = await dbGet(`bidding_practice/${code}/hands/${pos}`).catch(() => null);
+        const fresh = await dbGet(`bidding_practice/${code}/sets/${setId}/hands/${pos}`).catch(() => null);
         const currentLive = (fresh && fresh.liveCalls) || [];
         if (currentLive.length !== (hs.liveCalls || []).length) {
           lastSeenJson = null; // force next poll to re-render with the real state
           return;
         }
-        const sName = hs.sName, nName = hs.nName;
-        await dbPut(`bidding_practice/${code}/hands/${pos}`, {
+        await dbPut(`bidding_practice/${code}/sets/${setId}/hands/${pos}`, {
           sName, nName,
           liveCalls: [...currentLive, { seat: state.turnSeat, call }],
           revealed: false,
@@ -704,30 +760,25 @@ function wireBidBox(code, pos, hs, state) {
   });
 }
 
-function renderReveal(hand) {
+function renderReveal(hand, session, pos) {
+  const isLast = pos >= session.handNums.length - 1;
+  const nextLabel = isLast ? 'Back to first unfinished' : 'Next hand';
   return `
     <div class="reveal">
       ${hand.suggested ? `<div class="suggested"><h3>Suggested sequence</h3><p>${escapeHtml(hand.suggested)}</p></div>` : ''}
       ${hand.notes ? `<div class="notes"><h3>Notes</h3><p>${escapeHtml(hand.notes)}</p></div>` : ''}
-      <button id="nextHandBtn" class="primary">Next hand</button>
+      <button id="nextHandBtn" class="primary">${nextLabel}</button>
     </div>
   `;
 }
 
-function wireReveal(code, currentPos) {
+function wireReveal(code, myName, session) {
   const btn = document.getElementById('nextHandBtn');
   if (!btn) return;
-  btn.addEventListener('click', async () => {
-    btn.disabled = true;
-    try {
-      const fresh = await dbGet(`bidding_practice/${code}`).catch(() => null);
-      if (!fresh || fresh.currentPos !== currentPos) { lastSeenJson = null; return; }
-      await dbPut(`bidding_practice/${code}/currentPos`, currentPos + 1);
-      lastSeenJson = null;
-    } catch (e) {
-      toast('Could not advance - try again.');
-      btn.disabled = false;
-    }
+  btn.addEventListener('click', () => {
+    const isLast = viewPos >= session.handNums.length - 1;
+    viewPos = isLast ? firstUnfinishedPos(session) : viewPos + 1;
+    renderGameUI(code, myName);
   });
 }
 
