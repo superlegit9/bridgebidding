@@ -434,6 +434,8 @@ const POLL_MS = 2000;
 
 let pollTimer = null;
 let lastSeenJson = null;
+let lastSession = null;
+let viewPos = null; // local only - which hand THIS tab is currently looking at
 
 function toast(msg, ms = 3200) {
   toastEl.textContent = msg;
@@ -531,8 +533,6 @@ function renderLanding() {
 }
 
 // ---------- game (polling-based sync, free navigation via tracker) ----------
-let lastSession = null;
-let viewPos = null; // local only - which hand THIS tab is currently looking at
 
 function statusOf(session, pos) {
   const hs = session.hands[pos];
