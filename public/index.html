@@ -61,6 +61,11 @@ body {
 }
 
 .session-meta { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
+#setSwitcher {
+  background: rgba(198,154,58,0.12); color: var(--cream);
+  border: 1px solid var(--line); border-radius: 5px; padding: 5px 8px; font-size: 0.85rem;
+  font-family: var(--font-body);
+}
 .code-pill {
   font-family: var(--font-mono);
   background: rgba(198,154,58,0.15);
@@ -524,6 +529,38 @@ function getHand(setId, num) {
   const set = HANDS_DATA.sets.find((s) => slugify(s.name) === setId);
   return set ? set.hands.find((h) => h.num === num) : null;
 }
+
+// Progress summary for one set, for a given pair + viewer - reused by both
+// the landing screen's set dropdown and the in-session set switcher.
+function computeSetSummary(pair, setId, myName) {
+  const set = HANDS_DATA.sets.find((s) => slugify(s.name) === setId);
+  if (!set) return null;
+  const total = set.hands.length;
+  const setState = pair && pair.sets && pair.sets[setId];
+  if (!setState) return { done: 0, total, needsYou: 0, started: false };
+
+  const handNums = setState.handNums || set.hands.map((h) => h.num);
+  const handsObj = setState.hands || {};
+  const hostName = (pair.hostName || '').toLowerCase();
+  let done = 0, needsYou = 0;
+  for (let i = 0; i < handNums.length; i++) {
+    const hs = handsObj[i];
+    if (hs && hs.revealed) { done += 1; continue; }
+    const hostSeat = i % 2 === 0 ? 'S' : 'N';
+    const mySeat = myName.toLowerCase() === hostName ? hostSeat : (hostSeat === 'S' ? 'N' : 'S');
+    const hand = getHand(setId, handNums[i]);
+    const state = computeAuction(hand, (hs && hs.liveCalls) || []);
+    if (!state.over && state.turnSeat === mySeat) needsYou += 1;
+  }
+  return { done, total, needsYou, started: true };
+}
+
+function setOptionLabel(set, summary) {
+  const base = `${set.name} (${set.hands.length} hands)`;
+  if (!summary || !summary.started) return base;
+  const needs = summary.needsYou > 0 ? `, needs you on ${summary.needsYou}` : '';
+  return `${base} \u2014 ${summary.done}/${summary.total} done${needs}`;
+}
 function slugify(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
@@ -640,6 +677,22 @@ function renderLanding() {
     </div>
   `;
 
+  const refreshLabels = async () => {
+    const myName = document.getElementById('myName').value.trim();
+    const partnerName = document.getElementById('partnerName').value.trim();
+    if (!myName || !partnerName) return;
+    const key = pairKey(myName, partnerName);
+    const pair = await dbGet(`bidding_practice/${key}`).catch(() => null);
+    const setSelect = document.getElementById('setSelect');
+    if (!setSelect) return; // landing may have been navigated away from already
+    Array.from(setSelect.options).forEach((opt) => {
+      const set = HANDS_DATA.sets.find((s) => slugify(s.name) === opt.value);
+      opt.textContent = setOptionLabel(set, computeSetSummary(pair, opt.value, myName));
+    });
+  };
+  document.getElementById('myName').addEventListener('blur', refreshLabels);
+  document.getElementById('partnerName').addEventListener('blur', refreshLabels);
+
   document.getElementById('goBtn').addEventListener('click', async () => {
     const myName = document.getElementById('myName').value.trim();
     const partnerName = document.getElementById('partnerName').value.trim();
@@ -697,12 +750,21 @@ function firstUnfinishedPos(session) {
 
 function enterGame(code, myName, setId) {
   sessionMetaEl.classList.remove('hidden');
-  sessionMetaEl.innerHTML = `<button id="leaveBtn" class="link-btn">Leave session</button>`;
+  sessionMetaEl.innerHTML = `
+    <select id="setSwitcher" title="Switch set">${HANDS_DATA.sets.map((s) => {
+      const sid = slugify(s.name);
+      return `<option value="${sid}" ${sid === setId ? 'selected' : ''}>${s.name}</option>`;
+    }).join('')}</select>
+    <button id="leaveBtn" class="link-btn">Leave session</button>
+  `;
   document.getElementById('leaveBtn').addEventListener('click', () => {
     clearLocal();
     if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
     lastSession = null; viewPos = null;
     renderLanding();
+  });
+  document.getElementById('setSwitcher').addEventListener('change', (e) => {
+    switchSet(code, myName, e.target.value);
   });
 
   lastSeenJson = null;
@@ -717,6 +779,17 @@ function enterGame(code, myName, setId) {
       if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
       return renderLanding();
     }
+
+    // refresh the switcher's progress labels every tick (cheap, reuses
+    // the pair data we already fetched - no extra network calls)
+    const switcherEl = document.getElementById('setSwitcher');
+    if (switcherEl) {
+      Array.from(switcherEl.options).forEach((opt) => {
+        const set = HANDS_DATA.sets.find((s) => slugify(s.name) === opt.value);
+        opt.textContent = setOptionLabel(set, computeSetSummary(pair, opt.value, myName));
+      });
+    }
+
     const session = {
       hostName: pair.hostName, partnerName: pair.partnerName,
       handNums: setState.handNums, setId, setName: setState.setName,
@@ -731,6 +804,30 @@ function enterGame(code, myName, setId) {
   };
   tick();
   pollTimer = setInterval(tick, POLL_MS);
+}
+
+// Switches to a different set within the SAME pair (same two names) without
+// leaving the session. Resumes that set's progress if this pair already has
+// some, otherwise starts it fresh - same rule as picking a set on landing.
+async function switchSet(code, myName, newSetId) {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  const pair = await dbGet(`bidding_practice/${code}`).catch(() => null);
+  if (!pair) { toast('Session not found.'); clearLocal(); return renderLanding(); }
+
+  if (!pair.sets || !pair.sets[newSetId]) {
+    const set = HANDS_DATA.sets.find((s) => slugify(s.name) === newSetId);
+    if (!set) return toast('Set not found.');
+    const freshSetProgress = {
+      setName: set.name,
+      handNums: set.hands.map((h) => h.num),
+      hands: {},
+    };
+    await dbPut(`bidding_practice/${code}/sets/${newSetId}`, freshSetProgress).catch(() => {
+      toast('Could not switch set - try again.');
+    });
+  }
+  saveLocal(code, myName, newSetId);
+  enterGame(code, myName, newSetId);
 }
 
 function isMyTurnAt(session, pos, myName) {
